@@ -8,10 +8,7 @@ const app = express();
 
 const userAPIRouter = require('./routes/user');
 const inventoryAPIRouter = require('./routes/inventory');
-const projectsAPIRouter = require('./routes/projects');
-app.use('/user', userAPIRouter);
-app.use('/inventory', inventoryAPIRouter);
-app.use('/project', projectsAPIRouter);
+const projectsAPIRouter = require('./routes/project');
 
 
 app.set('view engine', 'ejs');
@@ -34,6 +31,10 @@ app.use(express.json());
 app.get('/ping', (req, res) => {
     return res.status(200).send('Server is running');
 });
+
+app.use('/user', userAPIRouter);
+app.use('/inventory', inventoryAPIRouter);
+app.use('/project', projectsAPIRouter);
 
 module.exports = app;
 
