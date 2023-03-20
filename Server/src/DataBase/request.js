@@ -46,25 +46,6 @@ const getAllTable = async (tableName) => {
     }
 }
 
-// get user from hubUserTable by email
-const getUser = async (userEmail) => {
-    console.log(userEmail);
-    const params = {
-        TableName: process.env.USER_TABLE,
-        Key: {
-            email: userEmail
-        },
-    };
-
-    try {
-        const data = await ddbDocClient.send(new GetCommand(params));
-        return data.Item;
-    } catch (err) {
-        console.log("Error: getUser:\n", err.stack);
-        return undefined;
-    }
-}
-
 // addItem in a specific table
 const addItemAtTable = async (item, table) => {
 
@@ -95,6 +76,7 @@ const deleteItem = async (table, name) => {
         return data;
     } catch (err) {
         console.log("Error", err.stack);
+        return undefined;
     }
 };
 
@@ -121,7 +103,6 @@ const updateItem = async (value, tableName, updateExpression, expressionAttribut
 
 module.exports = {
     getAllTable,
-    getUser,
     addItemAtTable,
     deleteItem,
     updateItem

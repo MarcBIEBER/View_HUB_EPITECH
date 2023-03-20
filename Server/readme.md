@@ -4,6 +4,9 @@
 
 1. You need to have nodejs installed on your machine
 2. You need to have 3 different tables in your database
+    - user table (primary key: email:string)
+    - project table (primary key: name:string)
+    - inventory table (primary key: name:string)
 3. You need to have an AWS IAM user with all the permissions needed to access the database and the bucket
 
 ### How to start the project

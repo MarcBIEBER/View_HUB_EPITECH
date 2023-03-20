@@ -4,7 +4,8 @@ const uuid = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { getAllTable, getUser, addItemAtTable, deleteItem, updateItem } = require('../DataBase/request');
+const { addItemAtTable, deleteItem, updateItem } = require('../DataBase/request');
+const { getUser } = require('../DataBase/requestUser');
 
 router.use(cors());
 module.exports = router;
@@ -24,7 +25,7 @@ router.post('/api/v1/login', async (req, res) => {
             const expressionAttributeValues = {
                 ":accessToken": user.accessToken,
             };
-            await updateItem(req.body.email, updateExpression, expressionAttributeValues);
+            await updateItem(req.body.email, process.env.USER_TABLE, updateExpression, expressionAttributeValues);
 
             res.cookie('accessToken', user.accessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
             res.status(200).send(user);
@@ -46,7 +47,8 @@ router.post('/api/v1/register', async (req, res) => {
         password: null,
         id: uuid.v4(),
         creationDate: new Date().toISOString(),
-        accessToken: null
+        accessToken: null,
+        currentSubscibedProject: [],
     }
     user.password = await bcrypt.hash(req.body.password, 10);
     user.accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "24h" });
