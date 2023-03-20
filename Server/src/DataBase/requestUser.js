@@ -33,7 +33,6 @@ const ddbDocClient = DynamoDBDocumentClient.from(client, translateConfig);
 
 // get user from hubUserTable by email
 const getUser = async (userEmail) => {
-    console.log(userEmail);
     const params = {
         TableName: process.env.USER_TABLE,
         Key: {
