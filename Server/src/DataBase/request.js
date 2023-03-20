@@ -50,7 +50,7 @@ const getAllTable = async (tableName) => {
 const getUser = async (userEmail) => {
     console.log(userEmail);
     const params = {
-        TableName: "hubUserTable",
+        TableName: process.env.USER_TABLE,
         Key: {
             email: userEmail
         },

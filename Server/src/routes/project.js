@@ -10,7 +10,7 @@ router.use(cors());
 module.exports = router;
 
 router.get('/api/v1/getProjects', async (req, res) => {
-    const projects = await getAllTable('hubProjectTable');
+    const projects = await getAllTable(process.env.PROJECT_TABLE);
     res.status(200).json(projects);
 });
 
@@ -27,7 +27,7 @@ router.post('/api/v1/createProject', async (req, res) => {
         return res.status(400).json({ msg: 'Please include a name, description, date and owner' });
     }
 
-    addItemAtTable(newProject, 'hubProjectTable');
+    addItemAtTable(newProject, process.env.PROJECT_TABLE);
     res.status(200).json(newProject);
 });
 
@@ -36,6 +36,6 @@ router.delete('/api/v1/deleteProject', async (req, res) => {
         return res.status(400).json({ msg: 'Please include a name' });
     }
     // Check if the user is the owner of the project or an admin
-    await deleteItem('hubProjectTable', req.body.name);
+    await deleteItem(process.env.PROJECT_TABLE, req.body.name);
     res.status(200);
 });

@@ -50,6 +50,6 @@ router.post('/api/v1/register', async (req, res) => {
     }
     user.password = await bcrypt.hash(req.body.password, 10);
     user.accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "24h" });
-    addItemAtTable(user, 'hubUserTable');
+    addItemAtTable(user, process.env.USER_TABLE);
     res.status(200).send(user);
 });
