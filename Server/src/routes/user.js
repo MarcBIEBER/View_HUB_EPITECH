@@ -27,7 +27,7 @@ router.post('/api/v1/login', async (req, res) => {
             };
             await updateItem(req.body.email, process.env.USER_TABLE, updateExpression, expressionAttributeValues);
 
-            res.cookie('accessToken', user.accessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie('accessToken', user.accessToken, { maxAge: 24 * 60 * 60 * 1000 * 31, httpOnly: true });
             res.status(200).send(user);
         } else {
             res.status(400).json({ msg: 'Email or password is wrong' });
@@ -52,6 +52,7 @@ router.post('/api/v1/register', async (req, res) => {
     }
     user.password = await bcrypt.hash(req.body.password, 10);
     user.accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "24h" });
+    res.cookie('accessToken', user.accessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
     addItemAtTable(user, process.env.USER_TABLE);
     res.status(200).send(user);
 });
