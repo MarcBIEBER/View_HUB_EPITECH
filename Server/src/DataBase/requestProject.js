@@ -30,3 +30,45 @@ const client = new DynamoDBClient({
 });
 
 const ddbDocClient = DynamoDBDocumentClient.from(client, translateConfig);
+
+const getProject = async (projectName) => {
+    const params = {
+        TableName: process.env.PROJECT_TABLE,
+        Key: {
+            name: projectName
+        },
+    };
+
+    try {
+        const data = await ddbDocClient.send(new GetCommand(params));
+        return data.Item;
+    } catch (err) {
+        console.log("Error: getProject:\n", err.stack);
+        return undefined;
+    }
+}
+
+// update an item in a specific table with a specific updateExpression and expressionAttributeValues must be in table with name as key
+const updateItemProject = async (value, tableName, updateExpression, expressionAttributeValues) => {
+    const params = {
+        TableName: tableName,
+        Key: {
+            name: value,
+        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ReturnValues: "ALL_NEW",
+    };
+
+    try {
+        const data = await ddbDocClient.send(new UpdateCommand(params));
+        return data;
+    } catch (err) {
+        console.error("Error", err.stack);
+    }
+};
+
+module.exports = {
+    getProject,
+    updateItemProject
+}

@@ -4,8 +4,8 @@ const uuid = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { addItemAtTable, deleteItem, updateItem } = require('../DataBase/request');
-const { getUser } = require('../DataBase/requestUser');
+const { addItemAtTable, deleteItem } = require('../DataBase/request');
+const { getUser, updateItem } = require('../DataBase/requestUser');
 
 router.use(cors());
 module.exports = router;

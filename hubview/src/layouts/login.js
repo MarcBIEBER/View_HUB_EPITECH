@@ -29,6 +29,7 @@ export default function Login(props) {
             .post('http://localhost:3000/user/api/v1/login', body)
             .then((res) => {
                 document.cookie = "accessToken=" + res.data.accessToken
+                document.cookie = "login=" + res.data.email
                 window.location.href = !previousView ? "/" : previousView;
             })
             .catch((err) => {

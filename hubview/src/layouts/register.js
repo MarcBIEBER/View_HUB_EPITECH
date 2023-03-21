@@ -28,6 +28,7 @@ export default function Register(props) {
         .post('http://localhost:3000/user/api/v1/register', { email, password })
         .then((res) => {
             document.cookie = "accessToken=" + res.data.accessToken
+            document.cookie = "login=" + res.data.email
             window.location.href = !previousView ? "/" : previousView;
         })
         .catch((err) => {

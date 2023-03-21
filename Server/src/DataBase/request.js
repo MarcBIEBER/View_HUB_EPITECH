@@ -81,29 +81,10 @@ const deleteItem = async (table, name) => {
 };
 
 
-// update an item in a specific table with a specific updateExpression and expressionAttributeValues
-const updateItem = async (value, tableName, updateExpression, expressionAttributeValues) => {
-    const params = {
-        TableName: tableName,
-        Key: {
-            email: value,
-        },
-        UpdateExpression: updateExpression,
-        ExpressionAttributeValues: expressionAttributeValues,
-        ReturnValues: "ALL_NEW",
-    };
 
-    try {
-        const data = await ddbDocClient.send(new UpdateCommand(params));
-        return data;
-    } catch (err) {
-        console.error("Error", err.stack);
-    }
-};
 
 module.exports = {
     getAllTable,
     addItemAtTable,
-    deleteItem,
-    updateItem
+    deleteItem
 }
