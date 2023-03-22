@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 
@@ -67,10 +68,11 @@ export default function Project() {
 							>
 								Vue des projets en cours
 							</Typography>
-							<Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
+							<Stack sx={{ pt: 4 }} spacing={2} justifyContent="center" >
 								<Button variant="contained" onClick={handleOpen} disabled={buttonDisabled}>
 									Crée un projet
 								</Button>
+								{ buttonDisabled ? <Alert severity="error">Vous devez être connecté pour créer un projet</Alert> : null }
 							</Stack>
 						</Container>
 					</Box>
@@ -80,9 +82,8 @@ export default function Project() {
 								<ProjectCard
 									avatar={project.owner.split('')[0]}
 									title={project.name}
-									subheader={project.date}
+									subheader={project.date.trim().split('T')[0] }
 									content={project.description}
-									id={project.id}
 								/>
 							))}
 						</Grid>

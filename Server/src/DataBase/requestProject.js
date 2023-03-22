@@ -68,7 +68,25 @@ const updateItemProject = async (value, tableName, updateExpression, expressionA
     }
 };
 
+const getUserSubscribedToProject = async (projectName) => {
+    const params = {
+        TableName: process.env.PROJECT_TABLE,
+        Key: {
+            name: projectName
+        },
+    };
+    
+    try {
+        const data = await ddbDocClient.send(new GetCommand(params));
+        return data.Item;
+    } catch (err) {
+        console.log("Error: getUserSubscribedToProject:\n", err.stack);
+        return undefined;
+    }
+}
+
 module.exports = {
     getProject,
-    updateItemProject
+    updateItemProject,
+    getUserSubscribedToProject
 }

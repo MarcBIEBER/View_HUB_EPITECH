@@ -22,7 +22,6 @@ const style = {
 export default function ModalProject(props) {
     const { open, setOpen, getAllProjects } = props;
 
-
 	const createProject = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -47,13 +46,7 @@ export default function ModalProject(props) {
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
 
-                <Typography
-                    component="h4"
-                    variant="h4"
-                    align="center"
-                    color="text.primary"
-                    gutterBottom
-                >
+                <Typography component="h4" variant="h4" align="center" color="text.primary" gutterBottom>
                     Crée un projet:
                 </Typography>
                 <Box component="form" noValidate onSubmit={createProject} sx={{ mt: 1 }}>

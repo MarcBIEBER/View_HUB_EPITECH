@@ -3,9 +3,12 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Tooltip from '@mui/material/Tooltip';
 
 import axios from 'axios';
 import { getCookie } from '../utils/handlePage';
+import { Avatar, Grid } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -20,15 +23,16 @@ const style = {
 };
 
 export default function ModalViewProject(props) {
-    const { open, setOpen, title, content, id } = props;
+    const { open, setOpen, title, content } = props;
+
+    const [subscribers, setSubscribers] = React.useState([]);
 
     const handleClose = () => setOpen(false);
     const handleSubscribe = (event) => {
         const login = getCookie('login');
         const param = {
-            projectId: id,
             email: login,
-            name: title
+            projectName: title
         }
         axios
             .post('http://localhost:3000/project/api/v1/subscribeToProject', param)
@@ -41,6 +45,35 @@ export default function ModalViewProject(props) {
             });
     }
 
+    const handleUnSubscribe = (event) => {
+        const login = getCookie('login');
+        const param = {
+            email: login,
+            projectName: title
+        }
+        axios
+            .post('http://localhost:3000/project/api/v1/unsubscribeToProject', param)
+            .then((res) => {
+                console.log(res.data);
+                handleClose();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    React.useEffect(() => {
+        axios
+            .get('http://localhost:3000/project/api/v1/getSubscribers?name=' + title)
+            .then((res) => {
+                console.log(res.data);
+                setSubscribers(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
     return (
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
@@ -50,7 +83,36 @@ export default function ModalViewProject(props) {
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                     {content}
                 </Typography>
-                <Button variant='contained' color='success' onClick={handleSubscribe} size='small' >Subscribe to this project</Button>
+                <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, display: 'grid', justifyContent: 'center' }} center>
+                    {
+                        subscribers.includes(getCookie("login")) ?
+                        <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' >Unsubscribe to this project</Button>
+                        :
+                        <Button variant='contained' color='success' onClick={handleSubscribe} size='small' >Subscribe to this project</Button>
+                    }
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                        {subscribers.map((box) => (
+                            <Tooltip id={box.split()[0]} title={box}>
+                                <Box
+                                    sx={{
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'gray',
+                                        margin: '5px',
+                                        display: 'inline-block',
+                                        textAlign: 'center',
+                                        color: 'white',
+                                    }}
+                                    center
+                                >
+                                    {box.split('')[0]}
+                                </Box>
+                            </Tooltip>
+                        ))}
+                    </Box>
+
+                </Box>
             </Box>
         </Modal>
     );

@@ -12,8 +12,7 @@ import Stack from '@mui/material/Stack';
 import ModalViewProject from './ModalViewProject';
 
 export default function ProjectCard(props) {
-    const { avatar, title, subheader, content, id } = props;
-
+    const { avatar, title, subheader, content } = props;
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
 
@@ -50,7 +49,6 @@ export default function ProjectCard(props) {
                 setOpen={setOpen}
                 title={title}
                 content={content}
-                id={id}
             />
         </Grid>
     );
