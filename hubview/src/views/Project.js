@@ -18,7 +18,7 @@ const theme = createTheme();
 export default function Project() {
 
 	const [project, setProject] = React.useState([]);
-	const [buttonDisabled, setButtonDisabled] = React.useState(false);
+	const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
 	const [open, setOpen] = React.useState(true);
 	const handleOpen = () => { setOpen(true) };
@@ -26,13 +26,13 @@ export default function Project() {
 
 	const getAllProjects = () => {
 		axios
-		.get('http://localhost:3000/project/api/v1/getProjects')
-		.then((res) => {
-			setProject(res.data);
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+			.get('http://localhost:3000/project/api/v1/getProjects')
+			.then((res) => {
+				setProject(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	React.useEffect(() => {
@@ -42,25 +42,6 @@ export default function Project() {
 			handleClose();
 		}
 	}, []);
-
-	const createProject = (event) => {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		const name = data.get('name');
-		const description = data.get('description');
-		const date = new Date().toISOString();
-		const owner = getCookie("login");
-		axios
-			.post("http://localhost:3000/project/api/v1/createProject", { name, description, date, owner })
-			.then((res) => {
-				handleClose();
-				getAllProjects();
-				getAllProjects();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
 
 	return (
 		<div>
@@ -122,7 +103,7 @@ export default function Project() {
 			<ModalCreateProject
 				open={open}
 				setOpen={setOpen}
-				createProject={createProject}
+				getAllProjects={getAllProjects}
 			/>
 		</div>
 	);

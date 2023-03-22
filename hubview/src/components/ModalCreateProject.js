@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import axios from 'axios';
+import { getCookie } from '../utils/handlePage';
 
 const style = {
 	position: 'absolute',
@@ -18,7 +20,27 @@ const style = {
 };
 
 export default function ModalProject(props) {
-    const { open, setOpen, createProject } = props;
+    const { open, setOpen, getAllProjects } = props;
+
+
+	const createProject = (event) => {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		const name = data.get('name');
+		const description = data.get('description');
+		const date = new Date().toISOString();
+		const owner = getCookie("login");
+		axios
+			.post("http://localhost:3000/project/api/v1/createProject", { name, description, date, owner })
+			.then((res) => {
+				handleClose();
+				getAllProjects();
+				getAllProjects();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	const handleClose = () => setOpen(false);
     return (
