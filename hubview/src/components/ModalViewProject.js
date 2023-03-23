@@ -37,7 +37,6 @@ export default function ModalViewProject(props) {
         axios
             .post('http://localhost:3000/project/api/v1/subscribeToProject', param)
             .then((res) => {
-                console.log(res.data);
                 handleClose();
             })
             .catch((err) => {
@@ -54,7 +53,6 @@ export default function ModalViewProject(props) {
         axios
             .post('http://localhost:3000/project/api/v1/unsubscribeToProject', param)
             .then((res) => {
-                console.log(res.data);
                 handleClose();
             })
             .catch((err) => {
@@ -66,7 +64,6 @@ export default function ModalViewProject(props) {
         axios
             .get('http://localhost:3000/project/api/v1/getSubscribers?name=' + title)
             .then((res) => {
-                console.log(res.data);
                 setSubscribers(res.data);
             })
             .catch((err) => {

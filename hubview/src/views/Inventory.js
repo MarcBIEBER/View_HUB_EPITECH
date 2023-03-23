@@ -13,6 +13,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
+import axios from 'axios';
 
 function createData(name, total, available, used, details) {
 	return {
@@ -155,15 +156,14 @@ export default function EnhancedTable() {
 	const [rows, setRows] = React.useState([]);
 
 	React.useEffect(() => {
-		setRows([
-			createData('aaa', 305, 3.7, 67, 4.3),
-			createData('bbb', 452, 25.0, 51, 4.9),
-			createData('ccc', 305, 3.7, 67, 4.3),
-			createData('ddd', 452, 25.0, 51, 4.9),
-			createData('eee', 305, 3.7, 67, 4.3),
-			createData('fff', 452, 25.0, 51, 4.9),
-			createData('ggg', 262, 16.0, 24, 6.0)
-		]);
+		axios
+			.get('http://localhost:3000/inventory/api/v1/getItems')
+			.then((res) => {
+				setRows(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}, []);
 
 	const handleRequestSort = (event, property) => {
