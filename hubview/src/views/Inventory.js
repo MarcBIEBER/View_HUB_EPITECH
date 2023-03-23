@@ -1,147 +1,12 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import { IconButton } from '@mui/material';
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
-import TextField from '@mui/material/TextField';
+import { Box, Table, TableContainer, Paper } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
 
-import { modifyItemInventory } from '../utils/handleInventory';
-
-function descendingComparator(a, b, orderBy) {
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
-	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
-	}
-	return 0;
-}
-
-function getComparator(order, orderBy) {
-	return order === 'desc'
-		? (a, b) => descendingComparator(a, b, orderBy)
-		: (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-function stableSort(array, comparator) {
-	const stabilizedThis = array.map((el, index) => [el, index]);
-	stabilizedThis.sort((a, b) => {
-		const order = comparator(a[0], b[0]);
-		if (order !== 0) {
-			return order;
-		}
-		return a[1] - b[1];
-	});
-	return stabilizedThis.map((el) => el[0]);
-}
-
-const headCells = [
-	{
-		id: 'name',
-		numeric: false,
-		label: 'Nom',
-	},
-	{
-		id: 'total',
-		numeric: true,
-		label: 'Total',
-	},
-	{
-		id: 'available',
-		numeric: true,
-		label: 'Disponible',
-	},
-	{
-		id: 'used',
-		numeric: true,
-		label: 'Utilisé',
-	},
-	{
-		id: 'details',
-		numeric: true,
-		label: 'Détails',
-	},
-];
-
-function EnhancedTableHead(props) {
-	const { order, orderBy, onRequestSort } =
-		props;
-	const createSortHandler = (property) => (event) => {
-		onRequestSort(event, property);
-	};
-
-	return (
-		<TableHead>
-			<TableRow>
-				{headCells.map((headCell) => (
-					<TableCell
-						key={headCell.id}
-						align={headCell.numeric ? 'right' : 'left'}
-						padding={'normal'}
-						sortDirection={orderBy === headCell.id ? order : false}
-					>
-						<TableSortLabel
-							active={orderBy === headCell.id}
-							direction={orderBy === headCell.id ? order : 'asc'}
-							onClick={createSortHandler(headCell.id)}
-						>
-							{headCell.label}
-							{orderBy === headCell.id ? (
-								<Box component="span" sx={visuallyHidden}>
-									{order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-								</Box>
-							) : null}
-						</TableSortLabel>
-					</TableCell>
-				))}
-			</TableRow>
-		</TableHead>
-	);
-}
-
-EnhancedTableHead.propTypes = {
-	onRequestSort: PropTypes.func.isRequired,
-	order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-	orderBy: PropTypes.string.isRequired
-};
-
-function EnhancedTableToolbar() {
-	return (
-		<Toolbar
-			sx={{
-				pl: { sm: 2 },
-				pr: { xs: 1, sm: 1 },
-			}}
-		>
-			<Typography
-				sx={{ flex: '1 1 100%' }}
-				variant="h6"
-				id="tableTitle"
-				component="div"
-			>
-				Inventaire du HUB
-			</Typography>
-		</Toolbar>
-	);
-}
+import TableBody from '../components/TabInventory/Body';
+import EnhancedTableToolbar from '../components/TabInventory/ToolBarHeader';
+import EnhancedTableHead from '../components/TabInventory/Header';
+import TabPagination from '../components/TabInventory/Pagination';
 
 export default function EnhancedTable() {
 	const [order, setOrder] = React.useState('asc');
@@ -150,91 +15,6 @@ export default function EnhancedTable() {
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
 	const [rows, setRows] = React.useState([]);
-
-	const handleDetailsChange = (event, id) => {
-		console.log(event.target.value);
-		const newRows = rows.map(row => {
-			if (row.id === id) {
-				modifyItemInventory(row.name, "details", event.target.value);
-				return {
-					...row,
-					details: event.target.value
-				}
-			}
-			return row;
-		});
-		setRows(newRows);
-	};
-
-	const handleAddTotal = (id) => {
-		const newRows = rows.map(row => {
-			if (row.id === id) {
-				modifyItemInventory(row.name, "totalItem", parseInt(row.totalItem) + 1);
-				modifyItemInventory(row.name, "available", parseInt(row.available) + 1);
-				return {
-					...row,
-					totalItem: parseInt(row.totalItem, 10) + 1,
-					available: parseInt(row.available, 10) + 1
-				}
-			}
-			return row;
-		});
-		setRows(newRows);
-	};
-
-	const handleRemoveTotal = (id) => {
-		const newRows = rows.map(row => {
-			if (row.id === id) {
-				if (row.totalItem == 0 || row.available == 0)
-					return { ...row };
-				modifyItemInventory(row.name, "totalItem", parseInt(row.totalItem) - 1);
-				modifyItemInventory(row.name, "available", parseInt(row.available) - 1);
-				return {
-					...row,
-					totalItem: parseInt(row.totalItem, 10) - 1,
-					available: parseInt(row.available, 10) - 1
-				}
-			}
-			return row;
-		});
-		setRows(newRows);
-	};
-
-	const handleAddUsed = (id) => {
-		const newRows = rows.map(row => {
-			if (row.id === id) {
-				if (row.available == 0)
-					return { ...row };
-				modifyItemInventory(row.name, "used", parseInt(row.used) + 1);
-				modifyItemInventory(row.name, "available", parseInt(row.available) - 1);
-				return {
-					...row,
-					used: parseInt(row.used, 10) + 1,
-					available: parseInt(row.available, 10) - 1
-				}
-			}
-			return row;
-		});
-		setRows(newRows);
-	};
-
-	const handleRemoveUsed = (id) => {
-		const newRows = rows.map(row => {
-			if (row.id === id) {
-				if (row.used == 0)
-					return row;
-				modifyItemInventory(row.name, "used", parseInt(row.used) - 1);
-				modifyItemInventory(row.name, "available", parseInt(row.available) + 1);
-				return {
-					...row,
-					used: parseInt(row.used, 10) - 1,
-					available: parseInt(row.available, 10) + 1
-				}
-			}
-			return row;
-		});
-		setRows(newRows);
-	};
 
 	React.useEffect(() => {
 		axios
@@ -262,9 +42,6 @@ export default function EnhancedTable() {
 		setPage(0);
 	};
 
-	// Avoid a layout jump when reaching the last page with empty rows.
-	const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
 	return (
 		<Box sx={{ width: '100%' }}>
 			<Paper sx={{ width: '100%', mb: 2 }}>
@@ -280,72 +57,24 @@ export default function EnhancedTable() {
 							orderBy={orderBy}
 							onRequestSort={handleRequestSort}
 							rowCount={rows.length}
+							visuallyHidden={visuallyHidden}
 						/>
-						<TableBody>
-							{stableSort(rows, getComparator(order, orderBy))
-								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-								.map((row, index) => {
-									const labelId = `enhanced-table-checkbox-${index}`;
-									return (
-										<TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-											<TableCell component="th" id={labelId} scope="row">
-												{row.name}
-											</TableCell>
-											<TableCell align="right">
-												{row.totalItem}
-												<IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
-													<AddIcon />
-												</IconButton>
-												<IconButton size='small' aria-label="add" onClick={() => handleRemoveTotal(row.id)}>
-													<RemoveIcon />
-												</IconButton>
-											</TableCell>
-
-											<TableCell align="right">
-												{row.available}
-											</TableCell>
-											<TableCell align="right">
-												{row.used}
-												<IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
-													<AddIcon />
-												</IconButton>
-												<IconButton size='small' aria-label="add" onClick={() => handleRemoveUsed(row.id)}>
-													<RemoveIcon />
-												</IconButton>
-											</TableCell>
-
-											<TableCell align="right">
-												<TextField
-													id="standard-multiline-flexible"
-													label="Multiline"
-													multiline
-													maxRows={4}
-													variant="standard"
-													defaultValue={row.details}
-													onBlur={(e) => handleDetailsChange(e, row.id)}
-												/>
-											</TableCell>
-										</TableRow>
-									);
-								})}
-							{emptyRows > 0 && (
-								<TableRow style={{ height: 53 * emptyRows }} >
-									<TableCell colSpan={6} />
-								</TableRow>
-							)}
-						</TableBody>
+						<TableBody
+							rows={rows}
+							setRows={setRows}
+							order={order}
+							orderBy={orderBy}
+							page={page}
+							rowsPerPage={rowsPerPage}
+						/>
 					</Table>
 				</TableContainer>
-				<TablePagination
-					rowsPerPageOptions={[5, 10, 25]}
-					component="div"
-					count={rows.length}
-					rowsPerPage={rowsPerPage}
+				<TabPagination
+					rows={rows}
 					page={page}
-					onPageChange={handleChangePage}
-					onRowsPerPageChange={handleChangeRowsPerPage}
-					labelDisplayedRows={({ from, to, count }) => `${from}-${to} sur ${count}`}
-					labelRowsPerPage={'Lignes par page'}
+					rowsPerPage={rowsPerPage}
+					handleChangePage={handleChangePage}
+					handleChangeRowsPerPage={handleChangeRowsPerPage}
 				/>
 			</Paper>
 		</Box>

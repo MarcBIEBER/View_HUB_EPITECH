@@ -1,14 +1,6 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { Card, CardHeader, CardContent, Avatar, Typography, Button, CardActions, Grid, Stack } from '@mui/material';
 import { red } from '@mui/material/colors';
-import CardActions from '@mui/material/CardActions';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import ModalViewProject from './ModalViewProject';
 
 export default function ProjectCard(props) {

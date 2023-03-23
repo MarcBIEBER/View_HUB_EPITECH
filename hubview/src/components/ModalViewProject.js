@@ -1,14 +1,8 @@
 import * as React from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Tooltip from '@mui/material/Tooltip';
+import { Modal, Box, Typography, Button, Container, Tooltip } from '@mui/material';
 
 import axios from 'axios';
 import { getCookie } from '../utils/handlePage';
-import { Avatar, Grid } from '@mui/material';
 
 const style = {
     position: 'absolute',

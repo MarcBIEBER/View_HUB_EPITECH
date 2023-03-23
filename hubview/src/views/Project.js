@@ -1,12 +1,5 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Alert from '@mui/material/Alert';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Button, Grid, Stack, Box, Typography, Container, Alert, createTheme, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 
 import ProjectCard from '../components/ProjectCard';
