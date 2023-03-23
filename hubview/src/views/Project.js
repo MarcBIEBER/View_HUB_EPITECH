@@ -21,7 +21,7 @@ export default function Project() {
 	const [project, setProject] = React.useState([]);
 	const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => { setOpen(true) };
 	const handleClose = () => setOpen(false);
 
