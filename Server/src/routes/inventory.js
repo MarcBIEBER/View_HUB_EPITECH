@@ -13,19 +13,20 @@ router.use(cors());
 module.exports = router;
 
 router.post('/api/v1/addItem', async (req, res) => {
-    const { name, totalItem, available, used, details } = req.body;
+    const { name, totalItem } = req.body;
 
     const newItem = {
         name: name,
         totalItem: totalItem,
-        available: available,
-        used: used,
-        details: details,
+        available: totalItem,
+        used: 0,
+        details: "Aucun détails",
         id: uuid.v4(),
     };
+    console.log(newItem)
     
-    if (!newItem.name || !newItem.totalItem || !newItem.available || !newItem.used || !newItem.details) {
-        return res.status(400).json({ msg: 'Please include a name, total, available, used and details' });
+    if (!newItem.name || !newItem.totalItem) {
+        return res.status(400).json({ msg: 'Please include a name and total' });
     }
 
     addItemAtTable(newItem, process.env.INVENTORY_TABLE);

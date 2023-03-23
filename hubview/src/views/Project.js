@@ -3,7 +3,7 @@ import { Button, Grid, Stack, Box, Typography, Container, Alert, createTheme, Th
 import axios from 'axios';
 
 import ProjectCard from '../components/ProjectCard';
-import ModalCreateProject from '../components/ModalCreateProject';
+import ModalCreateProject from '../components/Modal/ModalCreateProject';
 import { getCookie } from '../utils/handlePage';
 
 const theme = createTheme();

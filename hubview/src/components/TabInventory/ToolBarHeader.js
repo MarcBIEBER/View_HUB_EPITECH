@@ -1,6 +1,10 @@
-import { Toolbar, Typography } from '@mui/material';
+import * as React from 'react';
+import { Toolbar, Typography, Button } from '@mui/material';
 
-export default function EnhancedTableToolbar() {
+export default function EnhancedTableToolbar(props) {
+
+	const { handleOpen } = props;
+
 	return (
 		<Toolbar
 			sx={{
@@ -16,6 +20,9 @@ export default function EnhancedTableToolbar() {
 			>
 				Inventaire du HUB
 			</Typography>
+			<Button variant="contained" size='small' onClick={handleOpen} sx={{ ml: 2 }}>
+				Ajouter un nouvel item
+			</Button>
 		</Toolbar>
 	);
 }

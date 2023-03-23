@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Modal, TextField, Box, Typography, Button } from '@mui/material';
 import axios from 'axios';
-import { getCookie } from '../utils/handlePage';
+import { getCookie } from '../../utils/handlePage';
 
 const style = {
 	position: 'absolute',

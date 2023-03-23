@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Card, CardHeader, CardContent, Avatar, Typography, Button, CardActions, Grid, Stack } from '@mui/material';
 import { red } from '@mui/material/colors';
-import ModalViewProject from './ModalViewProject';
+import ModalViewProject from './Modal/ModalViewProject';
 
 export default function ProjectCard(props) {
     const { avatar, title, subheader, content } = props;
