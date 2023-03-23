@@ -55,7 +55,6 @@ router.post('/api/v1/modifyItem', async (req, res) => {
     const attributeToUpdate = `${row}`;
     const updateExpression = `SET ${row} = :valueToUpdate`;
     const expressionAttributeValues = { ":valueToUpdate": value };
-    console.log(updateExpression)
     const item = await updateItemInventory(name, process.env.INVENTORY_TABLE, updateExpression, expressionAttributeValues);
     if (!item) return res.status(500).json({ msg: 'Failed to modify item' });
     res.status(200).json(item);

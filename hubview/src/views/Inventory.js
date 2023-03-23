@@ -15,6 +15,7 @@ import Paper from '@mui/material/Paper';
 import { IconButton } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import TextField from '@mui/material/TextField';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
 
@@ -150,6 +151,20 @@ export default function EnhancedTable() {
 
 	const [rows, setRows] = React.useState([]);
 
+	const handleDetailsChange = (event, id) => {
+		console.log(event.target.value);
+		const newRows = rows.map(row => {
+			if (row.id === id) {
+				modifyItemInventory(row.name, "details", event.target.value);
+				return {
+					...row,
+					details: event.target.value
+				}
+			}
+			return row;
+		});
+		setRows(newRows);
+	};
 
 	const handleAddTotal = (id) => {
 		const newRows = rows.map(row => {
@@ -298,7 +313,18 @@ export default function EnhancedTable() {
 													<RemoveIcon />
 												</IconButton>
 											</TableCell>
-											<TableCell align="right">{row.details}</TableCell>
+
+											<TableCell align="right">
+												<TextField
+													id="standard-multiline-flexible"
+													label="Multiline"
+													multiline
+													maxRows={4}
+													variant="standard"
+													defaultValue={row.details}
+													onBlur={(e) => handleDetailsChange(e, row.id)}
+												/>
+											</TableCell>
 										</TableRow>
 									);
 								})}
