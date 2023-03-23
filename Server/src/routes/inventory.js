@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const uuid = require('uuid');
 
 const { getAllTable, addItemAtTable, deleteItem } = require('../DataBase/request');
 
@@ -10,14 +11,15 @@ router.use(cors());
 module.exports = router;
 
 router.post('/api/v1/addItem', async (req, res) => {
-    const { name, total, available, used, details, } = req.body;
+    const { name, total, available, used, details } = req.body;
 
     const newItem = {
         name: name,
         total: total,
         available: available,
         used: used,
-        details: details
+        details: details,
+        id: uuid.v4(),
     };
     
     if (!newItem.name || !newItem.total || !newItem.available || !newItem.used || !newItem.details) {

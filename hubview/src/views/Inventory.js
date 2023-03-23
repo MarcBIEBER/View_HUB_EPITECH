@@ -12,18 +12,11 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import { IconButton } from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from '@mui/icons-material/Add';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
-
-function createData(name, total, available, used, details) {
-	return {
-		name,
-		total,
-		available,
-		used,
-		details,
-	};
-}
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -155,6 +148,69 @@ export default function EnhancedTable() {
 
 	const [rows, setRows] = React.useState([]);
 
+
+	const handleAddTotal = (id) => {
+		const newRows = rows.map(row => {
+			if (row.id === id) {
+				return {
+					...row,
+					total: parseInt(row.total, 10) + 1,
+					available: parseInt(row.available, 10) + 1
+				}
+			}
+			return row;
+		});
+		setRows(newRows);
+	};
+
+	const handleRemoveTotal = (id) => {
+		const newRows = rows.map(row => {
+			if (row.id === id) {
+				if (row.total == 0 || row.available == 0)
+					return {...row};
+				return {
+					...row,
+					total: parseInt(row.total, 10) - 1,
+					available: parseInt(row.available, 10) - 1
+				}
+			}
+			return row;
+		});
+		setRows(newRows);
+	};
+
+	const handleAddUsed = (id) => {
+		const newRows = rows.map(row => {
+			if (row.id === id) {
+				if (row.available == 0)
+					return {...row};
+				return {
+					...row,
+					used: parseInt(row.used, 10) + 1,
+					available: parseInt(row.available, 10) - 1
+				}
+			}
+			return row;
+		});
+		setRows(newRows);
+	};
+
+	const handleRemoveUsed = (id) => {
+		const newRows = rows.map(row => {
+			if (row.id === id) {
+				if (row.used == 0)
+					return row;
+				return {
+					...row,
+					used: parseInt(row.used, 10) - 1,
+					available: parseInt(row.available, 10) + 1
+				}
+			}
+			return row;
+		});
+		setRows(newRows);
+	};
+
 	React.useEffect(() => {
 		axios
 			.get('http://localhost:3000/inventory/api/v1/getItems')
@@ -201,19 +257,38 @@ export default function EnhancedTable() {
 							rowCount={rows.length}
 						/>
 						<TableBody>
-							{stableSort(rows, getComparator(order, orderBy))
+							{/* {stableSort(rows, getComparator(order, orderBy)) */}
+							{rows.slice().sort(getComparator(order, orderBy))
 								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 								.map((row, index) => {
 									const labelId = `enhanced-table-checkbox-${index}`;
-
 									return (
 										<TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
 											<TableCell component="th" id={labelId} scope="row">
 												{row.name}
 											</TableCell>
-											<TableCell align="right">{row.total}</TableCell>
-											<TableCell align="right">{row.available}</TableCell>
-											<TableCell align="right">{row.used}</TableCell>
+											<TableCell align="right">
+												{row.total}
+												<IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
+													<AddIcon />
+												</IconButton>
+												<IconButton size='small' aria-label="add" onClick={() => handleRemoveTotal(row.id)}>
+													<RemoveIcon />
+												</IconButton>
+											</TableCell>
+
+											<TableCell align="right">
+												{row.available}
+											</TableCell>
+											<TableCell align="right">
+												{row.used}
+												<IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
+													<AddIcon />
+												</IconButton>
+												<IconButton size='small' aria-label="add" onClick={() => handleRemoveUsed(row.id)}>
+													<RemoveIcon />
+												</IconButton>
+											</TableCell>
 											<TableCell align="right">{row.details}</TableCell>
 										</TableRow>
 									);
