@@ -30,3 +30,26 @@ const client = new DynamoDBClient({
 });
 
 const ddbDocClient = DynamoDBDocumentClient.from(client, translateConfig);
+
+const updateItemInventory = async (value, tableName, updateExpression, expressionAttributeValues) => {
+    const params = {
+        TableName: tableName,
+        Key: {
+            name: value,
+        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ReturnValues: "ALL_NEW",
+    };
+
+    try {
+        const data = await ddbDocClient.send(new UpdateCommand(params));
+        return data;
+    } catch (err) {
+        console.error("Error", err.stack);
+    }
+};
+
+module.exports = {
+    updateItemInventory
+};

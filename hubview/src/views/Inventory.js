@@ -18,6 +18,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
 
+import { modifyItemInventory } from '../utils/handleInventory';
+
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
 		return -1;
@@ -152,9 +154,11 @@ export default function EnhancedTable() {
 	const handleAddTotal = (id) => {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
+				modifyItemInventory(row.name, "totalItem", parseInt(row.totalItem) + 1);
+				modifyItemInventory(row.name, "available", parseInt(row.available) + 1);
 				return {
 					...row,
-					total: parseInt(row.total, 10) + 1,
+					totalItem: parseInt(row.totalItem, 10) + 1,
 					available: parseInt(row.available, 10) + 1
 				}
 			}
@@ -166,11 +170,13 @@ export default function EnhancedTable() {
 	const handleRemoveTotal = (id) => {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
-				if (row.total == 0 || row.available == 0)
-					return {...row};
+				if (row.totalItem == 0 || row.available == 0)
+					return { ...row };
+				modifyItemInventory(row.name, "totalItem", parseInt(row.totalItem) - 1);
+				modifyItemInventory(row.name, "available", parseInt(row.available) - 1);
 				return {
 					...row,
-					total: parseInt(row.total, 10) - 1,
+					totalItem: parseInt(row.totalItem, 10) - 1,
 					available: parseInt(row.available, 10) - 1
 				}
 			}
@@ -183,7 +189,9 @@ export default function EnhancedTable() {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
 				if (row.available == 0)
-					return {...row};
+					return { ...row };
+				modifyItemInventory(row.name, "used", parseInt(row.used) + 1);
+				modifyItemInventory(row.name, "available", parseInt(row.available) - 1);
 				return {
 					...row,
 					used: parseInt(row.used, 10) + 1,
@@ -200,6 +208,8 @@ export default function EnhancedTable() {
 			if (row.id === id) {
 				if (row.used == 0)
 					return row;
+				modifyItemInventory(row.name, "used", parseInt(row.used) - 1);
+				modifyItemInventory(row.name, "available", parseInt(row.available) + 1);
 				return {
 					...row,
 					used: parseInt(row.used, 10) - 1,
@@ -257,8 +267,7 @@ export default function EnhancedTable() {
 							rowCount={rows.length}
 						/>
 						<TableBody>
-							{/* {stableSort(rows, getComparator(order, orderBy)) */}
-							{rows.slice().sort(getComparator(order, orderBy))
+							{stableSort(rows, getComparator(order, orderBy))
 								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 								.map((row, index) => {
 									const labelId = `enhanced-table-checkbox-${index}`;
@@ -268,7 +277,7 @@ export default function EnhancedTable() {
 												{row.name}
 											</TableCell>
 											<TableCell align="right">
-												{row.total}
+												{row.totalItem}
 												<IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
 													<AddIcon />
 												</IconButton>
