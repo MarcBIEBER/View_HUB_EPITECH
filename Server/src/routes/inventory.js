@@ -52,7 +52,6 @@ router.post('/api/v1/modifyItem', async (req, res) => {
     const { name, row, value } = req.body;
     if (!name || !row || !value) return res.status(400).json({ msg: 'Please include a name, row and value' });
 
-    const attributeToUpdate = `${row}`;
     const updateExpression = `SET ${row} = :valueToUpdate`;
     const expressionAttributeValues = { ":valueToUpdate": value };
     const item = await updateItemInventory(name, process.env.INVENTORY_TABLE, updateExpression, expressionAttributeValues);

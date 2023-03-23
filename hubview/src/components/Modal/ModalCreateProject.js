@@ -23,10 +23,9 @@ export default function ModalProject(props) {
 		const data = new FormData(event.currentTarget);
 		const name = data.get('name');
 		const description = data.get('description');
-		const date = new Date().toISOString();
 		const owner = getCookie("login");
 		axios
-			.post("http://localhost:3000/project/api/v1/createProject", { name, description, date, owner })
+			.post("http://localhost:3000/project/api/v1/createProject", { name, description, owner })
 			.then((res) => {
 				handleClose();
 				getAllProjects();

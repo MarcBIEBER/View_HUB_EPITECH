@@ -20,7 +20,7 @@ router.post('/api/v1/createProject', async (req, res) => {
     const newProject = {
         name: req.body.name,
         description: req.body.description,
-        date: req.body.date,
+        date: new Date().toISOString(),
         owner: req.body.owner,
         currentSubscriber: []
     };
@@ -33,14 +33,15 @@ router.post('/api/v1/createProject', async (req, res) => {
 });
 
 router.delete('/api/v1/deleteProject', async (req, res) => {
-    const { name, owner } = req.body;
+    const name = req.query.name;
+    const owner = req.query.email;
     if (!name || !owner) return res.status(400).json({ msg: 'Please include a name and owner' });
 
     const project = await getProject(name);
     if (!project) return res.status(400).json({ msg: 'Project not found' });
 
     // TODO: Check if the user is the owner of the project or an admin
-    if (project.owner !== req.body.owner) return res.status(400).json({ msg: 'You are not the owner of this project' });
+    if (project.owner !== owner) return res.status(400).json({ msg: 'You are not the owner of this project' });
 
     const deletedProject = await deleteItem(process.env.PROJECT_TABLE, name);
     if (!deletedProject) return res.status(500).json({ msg: 'Failed to delete project' });
@@ -50,7 +51,6 @@ router.delete('/api/v1/deleteProject', async (req, res) => {
 
 router.post("/api/v1/subscribeToProject", async (req, res) => {
     const { email, projectName } = req.body;
-    console.log(email, projectName);
     if (!email || !projectName) return res.status(400).json({ msg: 'Please include an email and project name' });
 
     const userValue = await getUser(email);
@@ -90,7 +90,6 @@ router.post("/api/v1/unsubscribeToProject", async (req, res) => {
     await updateItem(email, process.env.USER_TABLE, updateExpression, expressionAttributeValues);
 
     const newValueProject = projectValue.currentSubscriber.filter((user) => user !== userValue.email);
-    console.log(newValueProject);
     const updateExpressionProject = "SET currentSubscriber = :currentSubscriber";
     const expressionAttributeValuesProject = { ":currentSubscriber": newValueProject };
 
