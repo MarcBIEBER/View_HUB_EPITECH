@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Toolbar, Typography, Button } from '@mui/material';
+import { getCookie } from '../../utils/handlePage';
 
 export default function EnhancedTableToolbar(props) {
 
@@ -20,9 +21,15 @@ export default function EnhancedTableToolbar(props) {
 			>
 				Inventaire du HUB
 			</Typography>
-			<Button variant="contained" size='small' onClick={handleOpen} sx={{ ml: 2 }}>
-				Ajouter un nouvel item
-			</Button>
+
+			{
+				getCookie("user") === "fabien1.vogelweith@epitech.eu" ?
+				<Button variant="contained" size='small' onClick={handleOpen} sx={{ ml: 2 }}>
+					Ajouter un nouvel item
+				</Button>
+				:
+				<></>
+			}
 		</Toolbar>
 	);
 }

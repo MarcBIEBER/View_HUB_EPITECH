@@ -1,8 +1,11 @@
 import TableBody from '@mui/material/TableBody';
-import { modifyItemInventory } from '../../utils/handleInventory';
+import { modifyItemInventory, removeItemInventory } from '../../utils/handleInventory';
 import { IconButton, TableRow, TextField, TableCell } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+
+import { getCookie } from '../../utils/handlePage';
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -40,8 +43,14 @@ export default function BodyTable(props) {
 
     const { rows, setRows, order, orderBy, page, rowsPerPage } = props;
 
+	const handleRemoveRow = async (name, id) => {
+		const res = await removeItemInventory(name);
+		if (res.status !== 200) { return; }
+		const newRows = rows.filter(row => row.id !== id);
+		setRows(newRows);
+	};
+
 	const handleDetailsChange = (event, id) => {
-		console.log(event.target.value);
 		const newRows = rows.map(row => {
 			if (row.id === id) {
 				modifyItemInventory(row.name, "details", event.target.value);
@@ -140,28 +149,42 @@ export default function BodyTable(props) {
                             </TableCell>
                             <TableCell align="right">
                                 {row.totalItem}
+								{
+									getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+									<>
                                 <IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
                                     <AddIcon />
                                 </IconButton>
                                 <IconButton size='small' aria-label="add" onClick={() => handleRemoveTotal(row.id)}>
                                     <RemoveIcon />
                                 </IconButton>
+									</>
+									:
+									<></>
+								}
                             </TableCell>
 
-                            <TableCell align="right">
-                                {row.available}
-                            </TableCell>
+                            <TableCell align="right">{row.available}</TableCell>
                             <TableCell align="right">
                                 {row.used}
-                                <IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
-                                    <AddIcon />
-                                </IconButton>
-                                <IconButton size='small' aria-label="add" onClick={() => handleRemoveUsed(row.id)}>
-                                    <RemoveIcon />
-                                </IconButton>
+								{
+									getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+									<>
+										<IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
+											<AddIcon />
+										</IconButton>
+										<IconButton size='small' aria-label="add" onClick={() => handleRemoveUsed(row.id)}>
+											<RemoveIcon />
+										</IconButton>
+									</>
+									:
+									<></>
+								}
                             </TableCell>
 
                             <TableCell align="right">
+							{
+								getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
                                 <TextField
                                     id="standard-multiline-flexible"
                                     label="Multiline"
@@ -171,7 +194,21 @@ export default function BodyTable(props) {
                                     defaultValue={row.details}
                                     onBlur={(e) => handleDetailsChange(e, row.id)}
                                 />
+								:
+								<>{row.details}</>
+							}
                             </TableCell>
+
+							{
+								getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+								<TableCell align="right">
+									<IconButton size='small' aria-label="remove" onClick={() => handleRemoveRow(row.name, row.id)}>
+										<DeleteIcon />
+									</IconButton>
+								</TableCell>
+								:
+								<></>
+							}
                         </TableRow>
                     );
                 })}

@@ -11,6 +11,10 @@ export const modifyItemInventory = async (name, row, value) => {
     return res.data;
 }
 
-// module.exports = {
-//     modifyItemInventory
-// };
+export const removeItemInventory = async (name) => {
+    const body = {
+        name: name
+    }
+    const res = await axios.delete('http://localhost:3000/inventory/api/v1/deleteItem?name=' + name);
+    return res;
+}

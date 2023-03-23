@@ -23,7 +23,6 @@ router.post('/api/v1/addItem', async (req, res) => {
         details: "Aucun détails",
         id: uuid.v4(),
     };
-    console.log(newItem)
     
     if (!newItem.name || !newItem.totalItem) {
         return res.status(400).json({ msg: 'Please include a name and total' });
@@ -40,7 +39,7 @@ router.get('/api/v1/getItems', async (req, res) => {
 });
 
 router.delete('/api/v1/deleteItem', async (req, res) => {
-    const { name } = req.body;
+    const name = req.query.name;
     if (!name) return res.status(400).json({ msg: 'Please include an item name' });
 
     const deletedItem = await deleteItem(process.env.INVENTORY_TABLE, name);
