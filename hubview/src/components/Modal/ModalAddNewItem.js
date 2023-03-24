@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Modal, TextField, Box, Typography, Button } from '@mui/material';
 import axios from 'axios';
+import { getCookie } from '../../utils/handlePage';
 
 const style = {
 	position: 'absolute',
@@ -28,7 +29,7 @@ export default function ModalAddNewItem(props) {
 		const name = data.get('name');
 		const totalItem = data.get('total');
 		axios
-			.post("http://localhost:3000/inventory/api/v1/addItem", { name, totalItem })
+			.post("http://localhost:3000/inventory/api/v1/addItem", { name, totalItem, token: getCookie("accessToken") })
 			.then((res) => {
 				handleClose();
                 updateRows();

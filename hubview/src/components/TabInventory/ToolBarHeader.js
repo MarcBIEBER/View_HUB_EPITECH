@@ -1,10 +1,26 @@
 import * as React from 'react';
 import { Toolbar, Typography, Button } from '@mui/material';
 import { getCookie } from '../../utils/handlePage';
+import axios from 'axios';
 
 export default function EnhancedTableToolbar(props) {
 
 	const { handleOpen } = props;
+
+	const [admin, setAdmin] = React.useState(false);
+
+	React.useEffect(() => {
+		const cookie = getCookie("accessToken");
+		axios
+			.post("http://localhost:3000/user/api/v1/checkSuperToken", { token: cookie })
+			.then((res) => {
+				if (res.status === 200)
+					setAdmin(true);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
 	return (
 		<Toolbar
@@ -23,7 +39,7 @@ export default function EnhancedTableToolbar(props) {
 			</Typography>
 
 			{
-				getCookie("user") === "fabien1.vogelweith@epitech.eu" ?
+				admin ?
 				<Button variant="contained" size='small' onClick={handleOpen} sx={{ ml: 2 }}>
 					Ajouter un nouvel item
 				</Button>

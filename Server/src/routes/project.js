@@ -6,6 +6,7 @@ const cors = require('cors');
 const { getAllTable, addItemAtTable, deleteItem } = require('../DataBase/request');
 const { getUser, updateItem } = require('../DataBase/requestUser');
 const { getProject, updateItemProject, getUserSubscribedToProject } = require('../DataBase/requestProject');
+const { verifyAccessToken, verifyTokenForDelete } = require('../auth');
 
 router.use(cors());
 module.exports = router;
@@ -15,7 +16,7 @@ router.get('/api/v1/getProjects', async (req, res) => {
     res.status(200).json(projects);
 });
 
-router.post('/api/v1/createProject', async (req, res) => {
+router.post('/api/v1/createProject', verifyAccessToken, async (req, res) => {
     // TODO: check here if the name is already taken
     const newProject = {
         name: req.body.name,
@@ -35,13 +36,15 @@ router.post('/api/v1/createProject', async (req, res) => {
 router.delete('/api/v1/deleteProject', async (req, res) => {
     const name = req.query.name;
     const owner = req.query.email;
+    const token = req.query.token;
+    
     if (!name || !owner) return res.status(400).json({ msg: 'Please include a name and owner' });
-
+    
+    const verifyToken = verifyTokenForDelete(token, owner);
+    if (verifyToken == false) return res.status(401).json({ msg: 'Unauthorized' });
+    
     const project = await getProject(name);
     if (!project) return res.status(400).json({ msg: 'Project not found' });
-
-    // TODO: Check if the user is the owner of the project or an admin
-    if (project.owner !== owner) return res.status(400).json({ msg: 'You are not the owner of this project' });
 
     const deletedProject = await deleteItem(process.env.PROJECT_TABLE, name);
     if (!deletedProject) return res.status(500).json({ msg: 'Failed to delete project' });
@@ -49,7 +52,7 @@ router.delete('/api/v1/deleteProject', async (req, res) => {
     res.status(200).json({ msg: 'Project deleted' });
 });
 
-router.post("/api/v1/subscribeToProject", async (req, res) => {
+router.post("/api/v1/subscribeToProject", verifyAccessToken, async (req, res) => {
     const { email, projectName } = req.body;
     if (!email || !projectName) return res.status(400).json({ msg: 'Please include an email and project name' });
 
@@ -73,7 +76,7 @@ router.post("/api/v1/subscribeToProject", async (req, res) => {
     res.status(200).json({ msg: 'Project subscribed' });
 });
 
-router.post("/api/v1/unsubscribeToProject", async (req, res) => {
+router.post("/api/v1/unsubscribeToProject", verifyAccessToken, async (req, res) => {
     const { projectName, email } = req.body;
     
     if (!projectName || !email) return res.status(400).json({ msg: 'Please include a project name and email' });

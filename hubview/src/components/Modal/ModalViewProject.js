@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Modal, Box, Typography, Button, Container, Tooltip } from '@mui/material';
+import { Modal, Box, Typography, Button, Tooltip, IconButton, Stack } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import axios from 'axios';
 import { getCookie } from '../../utils/handlePage';
@@ -17,16 +18,19 @@ const style = {
 };
 
 export default function ModalViewProject(props) {
-    const { open, setOpen, title, content } = props;
+    const { open, setOpen, title, content, owner } = props;
 
     const [subscribers, setSubscribers] = React.useState([]);
+    const [isLogged, setIsLogged] = React.useState(false);
+    const [isAdmin, setIsAdmin] = React.useState(false);
 
     const handleClose = () => setOpen(false);
     const handleSubscribe = (event) => {
         const login = getCookie('login');
         const param = {
             email: login,
-            projectName: title
+            projectName: title,
+            token: getCookie('accessToken')
         }
         axios
             .post('http://localhost:3000/project/api/v1/subscribeToProject', param)
@@ -42,10 +46,22 @@ export default function ModalViewProject(props) {
         const login = getCookie('login');
         const param = {
             email: login,
-            projectName: title
+            projectName: title,
+            token: getCookie('accessToken')
         }
         axios
             .post('http://localhost:3000/project/api/v1/unsubscribeToProject', param)
+            .then((res) => {
+                handleClose();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    const handleDeletProject = (event) => {
+        axios
+            .delete('http://localhost:3000/project/api/v1/deleteProject?name=' + title + '&email=' + getCookie('login') + '&token=' + getCookie('accessToken'))
             .then((res) => {
                 handleClose();
             })
@@ -63,7 +79,25 @@ export default function ModalViewProject(props) {
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+        axios
+            .post('http://localhost:3000/user/api/v1/checkToken', { token: getCookie('accessToken') })
+            .then((res) => {
+                if (res.status === 200)
+                    setIsLogged(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        axios
+            .post('http://localhost:3000/user/api/v1/checkSuperToken', { token: getCookie('accessToken') })
+            .then((res) => {
+                if (res.status === 200)
+                    setIsAdmin(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }, []);
 
     return (
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
@@ -76,10 +110,13 @@ export default function ModalViewProject(props) {
                 </Typography>
                 <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, display: 'grid', justifyContent: 'center' }} center>
                     {
-                        subscribers.includes(getCookie("login")) ?
-                        <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' >Unsubscribe to this project</Button>
+                        isLogged ?
+                            subscribers.includes(getCookie("login")) ?
+                            <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' >Unsubscribe to this project</Button>
+                            :
+                            <Button variant='contained' color='success' onClick={handleSubscribe} size='small' >Subscribe to this project</Button>
                         :
-                        <Button variant='contained' color='success' onClick={handleSubscribe} size='small' >Subscribe to this project</Button>
+                        <></>
                     }
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
@@ -102,6 +139,14 @@ export default function ModalViewProject(props) {
                             </Tooltip>
                         ))}
                     </Box>
+                    {
+                        (isLogged && getCookie('login') === owner) || (isAdmin) ?
+                            <IconButton size='small' aria-label="remove" textAlign='right' onClick={() => handleDeletProject()}>
+                                <DeleteIcon />
+                            </IconButton>
+                        :
+                            <></>
+                    }
 
                 </Box>
             </Box>

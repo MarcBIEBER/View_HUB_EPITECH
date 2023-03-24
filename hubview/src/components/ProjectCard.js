@@ -4,7 +4,7 @@ import { red } from '@mui/material/colors';
 import ModalViewProject from './Modal/ModalViewProject';
 
 export default function ProjectCard(props) {
-    const { avatar, title, subheader, content } = props;
+    const { avatar, title, subheader, content, owner } = props;
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
 
@@ -41,6 +41,7 @@ export default function ProjectCard(props) {
                 setOpen={setOpen}
                 title={title}
                 content={content}
+                owner={owner}
             />
         </Grid>
     );

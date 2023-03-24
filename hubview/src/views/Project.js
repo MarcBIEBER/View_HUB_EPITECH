@@ -77,6 +77,7 @@ export default function Project() {
 									title={project.name}
 									subheader={project.date.trim().split('T')[0] }
 									content={project.description}
+									owner={project.owner}
 								/>
 							))}
 						</Grid>

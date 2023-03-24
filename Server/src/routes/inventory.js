@@ -8,11 +8,12 @@ const uuid = require('uuid');
 const { getAllTable, addItemAtTable, deleteItem } = require('../DataBase/request');
 
 const { updateItemInventory } = require('../DataBase/requestInventory');
+const { verifyAdminToken } = require('../auth');
 
 router.use(cors());
 module.exports = router;
 
-router.post('/api/v1/addItem', async (req, res) => {
+router.post('/api/v1/addItem', verifyAdminToken, async (req, res) => {
     const { name, totalItem } = req.body;
 
     const newItem = {
@@ -38,7 +39,7 @@ router.get('/api/v1/getItems', async (req, res) => {
     res.status(200).json(items);
 });
 
-router.delete('/api/v1/deleteItem', async (req, res) => {
+router.delete('/api/v1/deleteItem', verifyAdminToken, async (req, res) => {
     const name = req.query.name;
     if (!name) return res.status(400).json({ msg: 'Please include an item name' });
 
@@ -48,7 +49,7 @@ router.delete('/api/v1/deleteItem', async (req, res) => {
     res.status(200).json({ msg: 'Item deleted' });
 });
 
-router.post('/api/v1/modifyItem', async (req, res) => {
+router.post('/api/v1/modifyItem', verifyAdminToken, async (req, res) => {
     const { name, row, value } = req.body;
     if (!name || !row || !value) return res.status(400).json({ msg: 'Please include a name, row and value' });
 
