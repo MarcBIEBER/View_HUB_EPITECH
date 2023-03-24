@@ -1,3 +1,4 @@
+import * as React from 'react';
 import TableBody from '@mui/material/TableBody';
 import { modifyItemInventory, removeItemInventory } from '../../utils/handleInventory';
 import { IconButton, TableRow, TextField, TableCell } from '@mui/material';
@@ -6,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
 import { getCookie } from '../../utils/handlePage';
+import axios from 'axios';
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -42,6 +44,21 @@ function stableSort(array, comparator) {
 export default function BodyTable(props) {
 
     const { rows, setRows, order, orderBy, page, rowsPerPage } = props;
+
+	const [admin, setAdmin] = React.useState(false);
+
+	React.useEffect(() => {
+		const cookie = getCookie("accessToken");
+		axios
+			.post("http://localhost:3000/user/api/v1/checkSuperToken", { token: cookie })
+			.then((res) => {
+				if (res.status === 200)
+					setAdmin(true);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
 	const handleRemoveRow = async (name, id) => {
 		const res = await removeItemInventory(name);
@@ -150,7 +167,7 @@ export default function BodyTable(props) {
                             <TableCell align="right">
                                 {row.totalItem}
 								{
-									getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+									admin ?
 									<>
                                 <IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
                                     <AddIcon />
@@ -168,7 +185,7 @@ export default function BodyTable(props) {
                             <TableCell align="right">
                                 {row.used}
 								{
-									getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+									admin ?
 									<>
 										<IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
 											<AddIcon />
@@ -184,7 +201,7 @@ export default function BodyTable(props) {
 
                             <TableCell align="right">
 							{
-								getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+								admin ?
                                 <TextField
                                     id="standard-multiline-flexible"
                                     label="Multiline"
@@ -200,7 +217,7 @@ export default function BodyTable(props) {
                             </TableCell>
 
 							{
-								getCookie('login') === 'fabien1.vogelweith@epitech.eu' ?
+								admin ?
 								<TableCell align="right">
 									<IconButton size='small' aria-label="remove" onClick={() => handleRemoveRow(row.name, row.id)}>
 										<DeleteIcon />

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const { addItemAtTable, deleteItem } = require('../DataBase/request');
 const { getUser, updateItem } = require('../DataBase/requestUser');
+const { verifyAccessToken, verifyAdminToken } = require('../auth');
 
 router.use(cors());
 module.exports = router;
@@ -51,4 +52,12 @@ router.post('/api/v1/register', async (req, res) => {
     user.accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "24h" });
     addItemAtTable(user, process.env.USER_TABLE);
     res.status(200).send(user);
+});
+
+router.post('/api/v1/checkToken', verifyAccessToken, async (req, res) => {
+    return res.status(200).send({ msg: 'Token is valid' });
+});
+
+router.post('/api/v1/checkSuperToken', verifyAdminToken, async (req, res) => {
+    return res.status(200).send({ msg: 'Token is valid' });
 });

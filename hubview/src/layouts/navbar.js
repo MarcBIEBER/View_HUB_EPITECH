@@ -4,6 +4,7 @@ import { Tabs, Tab, Typography, Box } from '@mui/material';
 
 import Project from '../views/Project';
 import Inventory from '../views/Inventory';
+import PersistantHeader from '../components/PersistantHeader';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,6 +48,7 @@ export default function BasicTabs() {
 
   return (
     <Box sx={{ width: '100%' }}>
+      <PersistantHeader />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab label="Projet" {...a11yProps(0)} />

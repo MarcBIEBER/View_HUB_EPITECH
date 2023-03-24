@@ -32,6 +32,10 @@
     USER_TABLE="table1"
     PROJECT_TABLE="table2"
     INVENTORY_TABLE="table3"
+
+    // This value below is used to display or not the admin panel in the front end (part inventory)
+    // Btw, if you change this value when the server is running, you need to restart the server
+    ADMIN_EMAIL="adminEmailHere"
     ```
 
 3. Run the server with `npm start`

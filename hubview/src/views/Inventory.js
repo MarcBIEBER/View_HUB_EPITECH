@@ -8,8 +8,11 @@ import EnhancedTableToolbar from '../components/TabInventory/ToolBarHeader';
 import EnhancedTableHead from '../components/TabInventory/Header';
 import TabPagination from '../components/TabInventory/Pagination';
 import ModalAddNewItem from '../components/Modal/ModalAddNewItem';
+import { checkConnexion } from '../utils/handlePage';
 
 export default function EnhancedTable() {
+	checkConnexion();
+
 	const [order, setOrder] = React.useState('asc');
 	const [orderBy, setOrderBy] = React.useState('name');
 	const [page, setPage] = React.useState(0);
