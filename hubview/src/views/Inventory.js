@@ -9,6 +9,7 @@ import EnhancedTableHead from '../components/TabInventory/Header';
 import TabPagination from '../components/TabInventory/Pagination';
 import ModalAddNewItem from '../components/Modal/ModalAddNewItem';
 import { checkConnexion } from '../utils/handlePage';
+import ModalAskItem from '../components/Modal/ModalAskItem';
 
 export default function EnhancedTable() {
 	checkConnexion();
@@ -21,7 +22,9 @@ export default function EnhancedTable() {
 	const [rows, setRows] = React.useState([]);
 
 	const [open, setOpen] = React.useState(false);
+	const [openAsk, setOpenAsk] = React.useState(false);
 	const handleOpen = () => { setOpen(true) };
+	const handleOpenAsk = () => { setOpenAsk(true) };
 	const handleClose = () => setOpen(false);
 
 	const updateRows = () => {
@@ -79,6 +82,7 @@ export default function EnhancedTable() {
 								orderBy={orderBy}
 								page={page}
 								rowsPerPage={rowsPerPage}
+								handleOpenModalAsk={handleOpenAsk}
 							/>
 						</Table>
 					</TableContainer>
@@ -95,6 +99,10 @@ export default function EnhancedTable() {
 				open={open}
 				setOpen={setOpen}
 				updateRows={updateRows}
+			/>
+			<ModalAskItem
+				open={openAsk}
+				setOpen={setOpenAsk}
 			/>
 		</div>
 	);

@@ -8,7 +8,7 @@ const uuid = require('uuid');
 const { getAllTable, addItemAtTable, deleteItem } = require('../DataBase/request');
 
 const { updateItemInventory } = require('../DataBase/requestInventory');
-const { verifyAdminToken } = require('../auth');
+const { verifyAdminToken, verifyAccessToken } = require('../auth');
 
 router.use(cors());
 module.exports = router;
@@ -58,4 +58,13 @@ router.post('/api/v1/modifyItem', verifyAdminToken, async (req, res) => {
     const item = await updateItemInventory(name, process.env.INVENTORY_TABLE, updateExpression, expressionAttributeValues);
     if (!item) return res.status(500).json({ msg: 'Failed to modify item' });
     res.status(200).json(item);
+});
+
+router.post('/api/v1/askForItem', verifyAccessToken, async (req, res) => {
+    const { quantity, reason } = req.body;
+    if (!quantity || !reason) return res.status(400).json({ msg: 'Please include a quantity and reason' });
+    
+    //TODO: Send email to admin here
+    
+    res.status(200).send("OK");
 });

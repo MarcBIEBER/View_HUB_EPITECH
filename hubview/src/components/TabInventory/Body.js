@@ -4,6 +4,7 @@ import { modifyItemInventory, removeItemInventory } from '../../utils/handleInve
 import { IconButton, TableRow, TextField, TableCell } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
 
 import { getCookie } from '../../utils/handlePage';
@@ -43,7 +44,7 @@ function stableSort(array, comparator) {
 
 export default function BodyTable(props) {
 
-    const { rows, setRows, order, orderBy, page, rowsPerPage } = props;
+    const { rows, setRows, order, orderBy, page, rowsPerPage, handleOpenModalAsk } = props;
 
 	const [admin, setAdmin] = React.useState(false);
 
@@ -66,6 +67,10 @@ export default function BodyTable(props) {
 		const newRows = rows.filter(row => row.id !== id);
 		setRows(newRows);
 	};
+
+	const handleAskItem = async (name, totalItem) => {
+		handleOpenModalAsk()
+	}
 
 	const handleDetailsChange = (event, id) => {
 		const newRows = rows.map(row => {
@@ -215,16 +220,19 @@ export default function BodyTable(props) {
 								<>{row.details}</>
 							}
                             </TableCell>
-
 							{
 								admin ?
-								<TableCell align="right">
+								<TableCell align="right" style={{ width: "2vw"}}>
 									<IconButton size='small' aria-label="remove" onClick={() => handleRemoveRow(row.name, row.id)}>
 										<DeleteIcon />
 									</IconButton>
 								</TableCell>
 								:
-								<></>
+								<TableCell align='right' style={{ width: "2vw"}}>
+									<IconButton size='small' aria-label="sendRequestItem" onClick={() => handleAskItem(row.name, row.id)}>
+										<SendIcon />
+									</IconButton>
+								</TableCell>
 							}
                         </TableRow>
                     );
