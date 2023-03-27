@@ -18,15 +18,18 @@ router.get('/api/v1/getProjects', async (req, res) => {
 
 router.post('/api/v1/createProject', verifyAccessToken, async (req, res) => {
     // TODO: check here if the name is already taken
+    const { name, description, owner, type, tag } = req.body;
     const newProject = {
-        name: req.body.name,
-        description: req.body.description,
+        name: name,
+        description: description,
         date: new Date().toISOString(),
-        owner: req.body.owner,
+        owner: owner,
+        type: type,
+        tag: tag,
         currentSubscriber: []
     };
-    if (!newProject.name || !newProject.description || !newProject.date || !newProject.owner) {
-        return res.status(400).json({ msg: 'Please include a name, description, date and owner' });
+    if (!newProject.name || !newProject.description || !newProject.owner || !newProject.type || !newProject.tag) {
+        return res.status(400).json({ msg: 'Please include a name, description, type, tag and owner' });
     }
 
     addItemAtTable(newProject, process.env.PROJECT_TABLE);

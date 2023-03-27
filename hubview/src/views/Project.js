@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Grid, Stack, Box, Typography, Container, Alert, createTheme, ThemeProvider } from '@mui/material';
+import { Button, Grid, Stack, Box, Typography, Container, Alert, createTheme, ThemeProvider, MenuItem, Select, ListItemText } from '@mui/material';
 import axios from 'axios';
 
 import ProjectCard from '../components/ProjectCard';
@@ -8,26 +8,44 @@ import { getCookie } from '../utils/handlePage';
 
 const theme = createTheme();
 
+const premadeTags = [
+	'Front',
+	'Back',
+	'Fullstack',
+	'Mobile',
+	'Web',
+	'Desktop',
+	'IOT',
+	'AI'
+];
 
 export default function Project() {
 
-	const [project, setProject] = React.useState([]);
+	const [projects, setProjects] = React.useState([]);
+	const [tags, setTags] = React.useState(premadeTags);
 	const [buttonDisabled, setButtonDisabled] = React.useState(true);
+    const [filterType, setFilterType] = React.useState("");
 
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => { setOpen(true) };
 	const handleClose = () => setOpen(false);
 
+	const [selectedTag, setSelectedTag] = React.useState('');
+
 	const getAllProjects = () => {
 		axios
 			.get('http://localhost:3000/project/api/v1/getProjects')
 			.then((res) => {
-				setProject(res.data);
+				setProjects(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}
+
+    const handleFilterChange = (event) => {
+        setFilterType(event.target.value);
+    }
 
 	React.useEffect(() => {
 		getAllProjects();
@@ -37,19 +55,23 @@ export default function Project() {
 		}
 	}, []);
 
+	const handleTagChange = (event) => {
+		setSelectedTag(event.target.value);
+	}
+	const filteredProjectsByType = selectedTag
+	? projects.filter((project) => project.tag.includes(selectedTag))
+	: projects;
+  
+  const filteredProjects = filterType
+	? filteredProjectsByType.filter((project) => project.type === filterType)
+	: filteredProjectsByType;
+  
+
+
 	return (
 		<div>
 			<ThemeProvider theme={theme}>
-				{/* <AppBar position="relative">
-					<Toolbar>
-						<CameraIcon sx={{ mr: 2 }} />
-						<Typography variant="h6" color="inherit" noWrap>
-							Album layout
-						</Typography>
-					</Toolbar>
-				</AppBar> */}
 				<main>
-					{/* Hero unit */}
 					<Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, }}>
 						<Container maxWidth="sm">
 							<Typography
@@ -66,34 +88,42 @@ export default function Project() {
 									Crée un projet
 								</Button>
 								{ buttonDisabled ? <Alert severity="error">Vous devez être connecté pour créer un projet</Alert> : null }
+								<Select
+									value={selectedTag}
+									onChange={handleTagChange}
+									displayEmpty
+									inputProps={{ 'aria-label': 'Select tag filter' }}
+								>
+									<MenuItem value="">Selectionner un filtre</MenuItem>
+									{tags.map((name) => (
+										<MenuItem key={name} value={name}>
+											<ListItemText primary={name} />
+										</MenuItem>
+									))}
+								</Select>
+                                <Select
+                                    value={filterType}
+                                    onChange={handleFilterChange}
+									displayEmpty
+                                >
+                                    <MenuItem value="">Tous les types</MenuItem>
+                                    <MenuItem value="Projet entreprise">Entreprise</MenuItem>
+                                    <MenuItem value="Projet personelle">Perso</MenuItem>
+                                </Select>
 							</Stack>
 						</Container>
 					</Box>
 					<Container sx={{ py: 8 }} maxWidth="md">
 						<Grid container spacing={4}>
-							{project.map((project) => (
+							{filteredProjects.map((project) => (
 								<ProjectCard
-									avatar={project.owner.split('')[0]}
-									title={project.name}
-									subheader={project.date.trim().split('T')[0] }
-									content={project.description}
-									owner={project.owner}
+									key={project.id}
+									project={project}
 								/>
 							))}
 						</Grid>
 					</Container>
-
 				</main>
-				{/* Footer */}
-				{/* <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-					<Typography variant="h6" align="center" gutterBottom>
-						Footer
-					</Typography>
-					<Typography variant="subtitle1" align="center" color="text.secondary" component="p">
-						Something here to give the footer a purpose!
-					</Typography>
-				</Box> */}
-				{/* End footer */}
 			</ThemeProvider>
 			<ModalCreateProject
 				open={open}
@@ -103,3 +133,6 @@ export default function Project() {
 		</div>
 	);
 }
+
+
+// lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, quae quo quod, quidem, voluptas voluptate quibusdam voluptatum quos voluptates quia n esciun dunt ut la uda parum. Quam, quae quo quod, quidem, voluptas voluptate quibusdam voluptatum quos voluptates quia nesciunt ut laudantium pariatur. 

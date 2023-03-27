@@ -18,7 +18,7 @@ const style = {
 };
 
 export default function ModalViewProject(props) {
-    const { open, setOpen, title, content, owner } = props;
+    const { open, setOpen, project } = props;
 
     const [subscribers, setSubscribers] = React.useState([]);
     const [isLogged, setIsLogged] = React.useState(false);
@@ -29,7 +29,7 @@ export default function ModalViewProject(props) {
         const login = getCookie('login');
         const param = {
             email: login,
-            projectName: title,
+            projectName: project.name,
             token: getCookie('accessToken')
         }
         axios
@@ -46,7 +46,7 @@ export default function ModalViewProject(props) {
         const login = getCookie('login');
         const param = {
             email: login,
-            projectName: title,
+            projectName: project.name,
             token: getCookie('accessToken')
         }
         axios
@@ -61,7 +61,7 @@ export default function ModalViewProject(props) {
 
     const handleDeletProject = (event) => {
         axios
-            .delete('http://localhost:3000/project/api/v1/deleteProject?name=' + title + '&email=' + getCookie('login') + '&token=' + getCookie('accessToken'))
+            .delete('http://localhost:3000/project/api/v1/deleteProject?name=' + project.name + '&email=' + getCookie('login') + '&token=' + getCookie('accessToken'))
             .then((res) => {
                 handleClose();
             })
@@ -72,7 +72,7 @@ export default function ModalViewProject(props) {
 
     React.useEffect(() => {
         axios
-            .get('http://localhost:3000/project/api/v1/getSubscribers?name=' + title)
+            .get('http://localhost:3000/project/api/v1/getSubscribers?name=' + project.name)
             .then((res) => {
                 setSubscribers(res.data);
             })
@@ -103,10 +103,10 @@ export default function ModalViewProject(props) {
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                    {title}
+                    {project.name}
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    {content}
+                    {project.description}
                 </Typography>
                 <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, display: 'grid', justifyContent: 'center' }} center>
                     {
@@ -140,7 +140,7 @@ export default function ModalViewProject(props) {
                         ))}
                     </Box>
                     {
-                        (isLogged && getCookie('login') === owner) || (isAdmin) ?
+                        (isLogged && getCookie('login') === project.owner) || (isAdmin) ?
                             <IconButton size='small' aria-label="remove" textAlign='right' onClick={() => handleDeletProject()}>
                                 <DeleteIcon />
                             </IconButton>

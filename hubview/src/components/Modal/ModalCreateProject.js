@@ -1,43 +1,82 @@
 import * as React from 'react';
-import { Modal, TextField, Box, Typography, Button } from '@mui/material';
+import { Modal, TextField, Box, Typography, Button, RadioGroup, FormControlLabel, Radio, InputLabel, Select, Checkbox, ListItemText, MenuItem, OutlinedInput, FormControl } from '@mui/material';
 import axios from 'axios';
 import { getCookie } from '../../utils/handlePage';
 
 const style = {
-	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: 'background.paper',
-	border: '2px solid #000',
-	boxShadow: 24,
-	p: 4,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4
 };
+
+
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: 48 * 4.5 + 8,
+        },
+    },
+};
+
+const names = [
+    'Front',
+    'Back',
+    'Fullstack',
+    'Mobile',
+    'Web',
+    'Desktop',
+    'IOT',
+    'AI'
+];
 
 export default function ModalProject(props) {
     const { open, setOpen, getAllProjects } = props;
 
-	const createProject = (event) => {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		const name = data.get('name');
-		const description = data.get('description');
-		const owner = getCookie("login");
-		axios
-			.post("http://localhost:3000/project/api/v1/createProject", { name, description, owner, token: getCookie("accessToken") })
-			.then((res) => {
-				handleClose();
-				getAllProjects();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+    const [tagField, setTagField] = React.useState([]);
+    const [projectType, setProjectType] = React.useState('Projet entreprise');
 
-	const handleClose = () => setOpen(false);
+    const handleChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setTagField(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
+    const createProject = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const body = {
+            name: data.get('name'),
+            description: data.get('description'),
+            owner: getCookie("login"),
+            type: projectType,
+            tag: tagField,
+            token: getCookie("accessToken")
+        }
+        axios
+            .post("http://localhost:3000/project/api/v1/createProject", body)
+            .then((res) => {
+                event.target.reset();
+                setTagField([]);
+                handleClose();
+                getAllProjects();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    const handleClose = () => setOpen(false);
     return (
-			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
 
                 <Typography component="h4" variant="h4" align="center" color="text.primary" gutterBottom>
@@ -53,6 +92,7 @@ export default function ModalProject(props) {
                         name="name"
                         autoFocus
                     />
+
                     <TextField
                         margin="normal"
                         required
@@ -61,7 +101,38 @@ export default function ModalProject(props) {
                         name="description"
                         label="Description"
                         id="description"
+                        rows={4}
                     />
+
+                    <RadioGroup
+                        row
+                        name="row-radio-buttons-group"
+                        defaultValue="Projet entreprise"
+                    >
+                        <FormControlLabel value="Projet entreprise" control={<Radio />} label="Projet entreprise" onChange={(e) => setProjectType("Projet entreprise")} />
+                        <FormControlLabel value="Projet personelle" control={<Radio />} label="Projet personelle" onChange={(e) => setProjectType("Projet personelle")}/>
+                    </RadioGroup>
+
+                    <FormControl sx={{ m: 1, width: 300 }} >
+                        <InputLabel id="multiple-checkbox-label">Tag</InputLabel>
+                        <Select
+                            labelId="multiple-checkbox-label"
+                            multiple
+                            value={tagField}
+                            onChange={handleChange}
+                            input={<OutlinedInput label="Tag" />}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                        >
+                            {names.map((name) => (
+                                <MenuItem key={name} value={name}>
+                                    <Checkbox checked={tagField.indexOf(name) > -1} />
+                                    <ListItemText primary={name} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
                     <Button
                         type="submit"
                         fullWidth
@@ -70,6 +141,7 @@ export default function ModalProject(props) {
                     >
                         Crée le projet
                     </Button>
+
                 </Box>
             </Box>
         </Modal>
