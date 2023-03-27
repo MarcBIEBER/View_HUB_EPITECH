@@ -17,8 +17,10 @@ router.get('/api/v1/getProjects', async (req, res) => {
 });
 
 router.post('/api/v1/createProject', verifyAccessToken, async (req, res) => {
-    // TODO: check here if the name is already taken
     const { name, description, owner, type, tag } = req.body;
+    if (!name || !description || !owner || !type || !tag) return res.status(400).json({ msg: 'Please include a name, description, type, tag and owner' });
+
+    if (await getProject(name)) return res.status(400).json({ msg: 'Project name is already taken' });
     const newProject = {
         name: name,
         description: description,

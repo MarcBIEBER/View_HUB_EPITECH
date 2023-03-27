@@ -40,7 +40,9 @@ router.post('/api/v1/register', async (req, res) => {
     if (!req.body.email || !req.body.password) {
         return res.status(400).json({ msg: 'Please include an email and a password' });
     }
-    // TODO: check here if the email is already taken
+    if (await getUser(req.body.email)) {
+        return res.status(400).json({ msg: 'Email is already taken' });
+    }
     const user = {
         email: req.body.email,
         password: null,
