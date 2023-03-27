@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Box, Typography, Button, Tooltip, IconButton, Stack } from '@mui/material';
+import { Modal, Box, Typography, Button, Tooltip, IconButton, Stack, Chip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import axios from 'axios';
@@ -97,58 +97,68 @@ export default function ModalViewProject(props) {
             .catch((err) => {
                 console.log(err);
             });
-        }, []);
+    }, []);
 
     return (
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Typography id="modal-modal-title" variant="h5" component="h2" sx={{ textAlign: 'center' }}>
                     {project.name}
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                    {project.tag.map((tag) => (
+                        <Chip key={tag} label={tag} size="small" sx={{ margin: 0.5 }} />
+                    ))}
+                </Box>
+                <Typography id="modal-modal-description" sx={{ mt: 2, fontSize: 16, textAlign: 'center' }}>
                     {project.description}
                 </Typography>
-                <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, display: 'grid', justifyContent: 'center' }} center>
-                    {
-                        isLogged ?
-                            subscribers.includes(getCookie("login")) ?
-                            <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' >Unsubscribe to this project</Button>
-                            :
-                            <Button variant='contained' color='success' onClick={handleSubscribe} size='small' >Subscribe to this project</Button>
-                        :
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2 }}>
+                    {isLogged ? (
+                        subscribers.includes(getCookie("login")) ? (
+                            <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
+                                Unsubscribe
+                            </Button>
+                        ) : (
+                            <Button variant='contained' color='success' onClick={handleSubscribe} size='small' sx={{ margin: 1 }}>
+                                Subscribe
+                            </Button>
+                        )
+                    ) : (
                         <></>
-                    }
-
-                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                    )}
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {subscribers.map((box) => (
-                            <Tooltip id={box.split()[0]} title={box}>
+                            <Tooltip key={box} id={box.split()[0]} title={box}>
                                 <Box
                                     sx={{
                                         width: '20px',
                                         height: '20px',
                                         backgroundColor: 'gray',
                                         margin: '5px',
-                                        display: 'inline-block',
-                                        textAlign: 'center',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
                                         color: 'white',
+                                        borderRadius: '50%'
                                     }}
-                                    center
                                 >
                                     {box.split('')[0]}
                                 </Box>
                             </Tooltip>
                         ))}
                     </Box>
-                    {
-                        (isLogged && getCookie('login') === project.owner) || (isAdmin) ?
-                            <IconButton size='small' aria-label="remove" textAlign='right' onClick={() => handleDeletProject()}>
-                                <DeleteIcon />
-                            </IconButton>
-                        :
-                            <></>
-                    }
-
+                    {(isLogged && getCookie('login') === project.owner) || (isAdmin) ? (
+                        <IconButton size='small' aria-label="remove" textAlign='right' onClick={() => handleDeletProject()} sx={{ margin: 1 }}>
+                            <DeleteIcon />
+                        </IconButton>
+                    ) : (
+                        <></>
+                    )}
                 </Box>
+                <Typography variant="subtitle1" sx={{ pt: 2 }}>
+                    Type: {project.type === 'personal' ? 'Projet personelle' : 'Projet entreprise'}
+                </Typography>
             </Box>
         </Modal>
     );

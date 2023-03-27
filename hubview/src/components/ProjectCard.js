@@ -40,13 +40,13 @@ export default function ProjectCard(props) {
                         Type:
                     </Typography>
                     <Typography variant="body1">
-                        {project.type === 'personal' ? 'Personal Project' : 'Company Project'}
+                        {project.type === 'Projet personelle' ? 'Projet personelle' : 'Projet entreprise'}
                     </Typography>
                 </CardContent>
                 <CardActions>
                     <Stack sx={{ pt: 4 }} justifyContent="center">
                         <Button onClick={handleOpen} variant="outlined" size='small'>
-                            View Details
+                            Voir les détails
                         </Button>
                     </Stack>
                 </CardActions>
