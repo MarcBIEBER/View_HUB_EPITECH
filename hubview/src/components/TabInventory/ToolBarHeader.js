@@ -40,7 +40,7 @@ export default function EnhancedTableToolbar(props) {
 			{
 				admin ?
 				<Button variant="contained" size='small' onClick={handleOpen} sx={{ ml: 2 }}>
-					Ajouter un nouvel item
+					Insérer un objet
 				</Button>
 				:
 				<></>

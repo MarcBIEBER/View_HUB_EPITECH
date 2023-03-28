@@ -209,7 +209,7 @@ export default function BodyTable(props) {
 								admin ?
                                 <TextField
                                     id="standard-multiline-flexible"
-                                    label="Multiline"
+                                    label="Commentaires"
                                     multiline
                                     maxRows={4}
                                     variant="standard"

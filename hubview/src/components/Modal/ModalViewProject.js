@@ -113,7 +113,7 @@ export default function ModalViewProject(props) {
                 <Typography id="modal-modal-description" sx={{ mt: 2, fontSize: 16, textAlign: 'center' }}>
                     {project.description}
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, flexDirection: 'column' }}>
                     {isLogged ? (
                         subscribers.includes(getCookie("login")) ? (
                             <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
@@ -127,7 +127,7 @@ export default function ModalViewProject(props) {
                     ) : (
                         <></>
                     )}
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
                         {subscribers.map((box) => (
                             <Tooltip key={box} id={box.split()[0]} title={box}>
                                 <Box
@@ -149,7 +149,7 @@ export default function ModalViewProject(props) {
                         ))}
                     </Box>
                     {(isLogged && getCookie('login') === project.owner) || (isAdmin) ? (
-                        <IconButton size='small' aria-label="remove" textAlign='right' onClick={() => handleDeletProject()} sx={{ margin: 1 }}>
+                        <IconButton size='small' aria-label="remove" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 1}} onClick={() => handleDeletProject()}>
                             <DeleteIcon />
                         </IconButton>
                     ) : (

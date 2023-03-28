@@ -45,7 +45,7 @@ export default function ModalAddNewItem(props) {
             <Box sx={style}>
 
                 <Typography variant="h4" align="center" color="text.primary" gutterBottom>
-                    Crée un item:
+                    Ajouter un objet
                 </Typography>
                 <Box component="form" noValidate onSubmit={createNewItem} sx={{ mt: 1 }}>
                     <TextField
@@ -53,7 +53,7 @@ export default function ModalAddNewItem(props) {
                         required
                         fullWidth
                         id="name"
-                        label="Nom de l'item"
+                        label="Nom de l'objet"
                         name="name"
                         autoFocus
                     />
@@ -71,7 +71,7 @@ export default function ModalAddNewItem(props) {
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Ajouter un item
+                        Ajouter un objet
                     </Button>
                 </Box>
             </Box>

@@ -117,7 +117,7 @@ export default function Project() {
 						<Grid container spacing={4}>
 							{filteredProjects.map((project) => (
 								<ProjectCard
-									key={project.id}
+									key={project.name}
 									project={project}
 								/>
 							))}
