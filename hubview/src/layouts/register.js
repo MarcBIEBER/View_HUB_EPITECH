@@ -41,11 +41,11 @@ export default function Register(props) {
             <LockOutlinedIcon />
           </Avatar>
           <Typography variant="h5">
-            Sign up
+            Créez votre compte
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
@@ -65,13 +65,13 @@ export default function Register(props) {
                   name="lastName"
                   autoComplete="family-name"
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Adresse e-mail"
                   name="email"
                   autoComplete="email"
                 />
@@ -81,7 +81,7 @@ export default function Register(props) {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Mot de passe"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -94,12 +94,12 @@ export default function Register(props) {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              S'inscrire
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/login" variant="body2">
-                  Already have an account? Sign in
+                  Vous avez déjà un compte ? Connectez-vous !
                 </Link>
               </Grid>
             </Grid>

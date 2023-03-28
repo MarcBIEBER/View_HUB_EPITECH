@@ -15,12 +15,12 @@ const headCells = [
 	{
 		id: 'available',
 		numeric: true,
-		label: 'Disponible',
+		label: 'Disponibilité',
 	},
 	{
 		id: 'used',
 		numeric: true,
-		label: 'Utilisé',
+		label: 'En cours d\'utilisation',
 	},
 	{
 		id: 'details',

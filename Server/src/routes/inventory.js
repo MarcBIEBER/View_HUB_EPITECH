@@ -68,7 +68,7 @@ router.post('/api/v1/askForItem', verifyAccessToken, async (req, res) => {
     const { quantity, reason } = req.body;
     if (!quantity || !reason) return res.status(400).json({ msg: 'Please include a quantity and reason' });
     
-    //TODO: Send email to admin here
+    // TODO: Send email to admin here
     
     res.status(200).send("OK");
 });

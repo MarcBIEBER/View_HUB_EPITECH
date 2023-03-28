@@ -61,7 +61,7 @@ export default function Login(props) {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography variant="h5">
-                            Sign in
+                            Connexion
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <TextField
@@ -69,7 +69,7 @@ export default function Login(props) {
                                 required
                                 fullWidth
                                 id="email"
-                                label="Email Address"
+                                label="Adresse e-mail"
                                 name="email"
                                 autoComplete="email"
                                 autoFocus
@@ -79,7 +79,7 @@ export default function Login(props) {
                                 required
                                 fullWidth
                                 name="password"
-                                label="Password"
+                                label="Mot de passe"
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
@@ -90,12 +90,20 @@ export default function Login(props) {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Sign In
+                                Se connecter
                             </Button>
                             <Grid container>
                                 <Grid item>
                                     <Link href="/register" variant="body2">
-                                        {"Don't have an account? Sign Up"}
+                                        {"Vous n'avez pas de compte ? Inscrivez-vous !"}
+                                    </Link>
+                                </Grid>
+                            </Grid>
+
+                            <Grid container marginTop={"4vh"}>
+                                <Grid item>
+                                    <Link href="/" variant="body2">
+                                        Continuer sans se connecter
                                     </Link>
                                 </Grid>
                             </Grid>

@@ -85,7 +85,7 @@ export default function Project() {
 							{buttonDisabled ? <Alert severity="error">Vous devez être connecté pour créer un projet</Alert> : <></>}
 							<Stack sx={{ pt: 4 }} spacing={2} justifyContent="center" >
 								<Button variant="contained" onClick={handleOpen} disabled={buttonDisabled}>
-									Crée un projet
+									Créer un projet
 								</Button>
 								
 								<Select
@@ -94,7 +94,7 @@ export default function Project() {
 									displayEmpty
 									inputProps={{ 'aria-label': 'Select tag filter' }}
 								>
-									<MenuItem value="">Selectionner un filtre</MenuItem>
+									<MenuItem value="">Sélectionner un filtre</MenuItem>
 									{tags.map((name) => (
 										<MenuItem key={name} value={name}>
 											<ListItemText primary={name} />
