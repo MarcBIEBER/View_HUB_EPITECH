@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Avatar, Button, CssBaseline, TextField, Link, Paper, Box, Grid, Typography, createTheme, ThemeProvider } from '@mui/material';
+import { Avatar, Button, CssBaseline, TextField, Link, Paper, Box, Grid, Typography, createTheme, ThemeProvider, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
 
@@ -7,11 +7,29 @@ const theme = createTheme();
 
 export default function Login(props) {
     const { previousView } = props;
+
+	const [fieldErrors, setFieldErrors] = React.useState({});
+    const [requestStatus, setRequestStatus] = React.useState(null);
+
     const handleSubmit = (event) => {
+		event.preventDefault();
+        setRequestStatus(null);
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const email = data.get('email');
         const password = data.get('password');
+
+		const fieldErrorss = {};
+		if (!email) {
+			fieldErrorss.email = 'Veuillez renseigner votre adresse e-mail';
+		}
+		if (!password) {
+			fieldErrorss.password = 'Veuillez renseigner votre mot de passe';
+		}
+		if (Object.keys(fieldErrorss).length > 0) {
+			setFieldErrors(fieldErrorss);
+			return;
+		}
         const body = {
             email: email,
             password: password
@@ -23,9 +41,13 @@ export default function Login(props) {
                 document.cookie = "login=" + res.data.email
                 document.cookie = "urlImage=" + res.data.urlImage
                 window.location.href = !previousView ? "/" : previousView;
+                setFieldErrors({});
+                setRequestStatus(res.status);
             })
             .catch((err) => {
-                console.log(err);
+                // console.log(err);
+                setRequestStatus(err.response?.status);
+                setFieldErrors({});
             })
 
     };
@@ -73,6 +95,8 @@ export default function Login(props) {
                                 label="Adresse e-mail"
                                 name="email"
                                 autoComplete="email"
+                                error={Boolean(fieldErrors.email)}
+                                helperText={fieldErrors.email}
                                 autoFocus
                             />
                             <TextField
@@ -83,8 +107,15 @@ export default function Login(props) {
                                 label="Mot de passe"
                                 type="password"
                                 id="password"
+                                error={Boolean(fieldErrors.password)}
+                                helperText={fieldErrors.password}
                                 autoComplete="current-password"
                             />
+                            {
+                                requestStatus === 400 && (
+                                    <Alert severity="error" margin="normal" required fullWidth>Identifiants incorrects</Alert>
+                                )
+                            }
                             <Button
                                 type="submit"
                                 fullWidth

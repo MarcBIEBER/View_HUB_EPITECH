@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, TextField, Box, Typography, Button } from '@mui/material';
+import { Modal, TextField, Alert, Box, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import { getCookie } from '../../utils/handlePage';
 
@@ -18,7 +18,13 @@ const style = {
 export default function ModalAddNewItem(props) {
 
     const { open, setOpen, updateRows } = props;
+    const [fieldErrors, setFieldErrors] = React.useState({});
+    const [requestStatus, setRequestStatus] = React.useState(null);
 
+    React.useEffect(() => {
+        setRequestStatus(null);
+        setFieldErrors({});
+    }, [open]);
 
     const handleClose = () => setOpen(false);
 
@@ -34,14 +40,36 @@ export default function ModalAddNewItem(props) {
             token: getCookie("accessToken")
         }
 
+        const fieldErrorss = {};
+        if (!body.name) {
+            fieldErrorss.name = "Le nom de l'objet est obligatoire";
+        }
+        if (!body.totalItem) {
+            fieldErrorss.totalItem = "Le total d'objet est obligatoire";
+        }
+        if (!body.urlImage) {
+            fieldErrorss.urlImage = "L'url de l'image est obligatoire";
+        }
+        if (!body.localisation) {
+            fieldErrorss.localisation = "La localisation est obligatoire";
+        }
+        if (Object.keys(fieldErrorss).length > 0) {
+            setFieldErrors(fieldErrorss);
+            return;
+        }
+
         axios
             .post("http://localhost:3000/inventory/api/v1/addItem", body)
             .then((res) => {
                 handleClose();
                 updateRows();
+                setFieldErrors({});
+                setRequestStatus(res.status);
             })
             .catch((err) => {
                 console.log(err);
+                setRequestStatus(err.response?.status);
+                setFieldErrors({});
             });
     }
 
@@ -62,6 +90,8 @@ export default function ModalAddNewItem(props) {
                         name="urlImage"
                         label="URL de l'image"
                         id="urlImage"
+                        error={Boolean(fieldErrors.urlImage)}
+                        helperText={fieldErrors.urlImage}
                     />
                     <TextField
                         margin="normal"
@@ -70,6 +100,8 @@ export default function ModalAddNewItem(props) {
                         id="name"
                         label="Nom de l'objet"
                         name="name"
+                        error={Boolean(fieldErrors.name)}
+                        helperText={fieldErrors.name}
                         autoFocus
                     />
                     <TextField
@@ -79,6 +111,8 @@ export default function ModalAddNewItem(props) {
                         name="localisation"
                         label="Localisation"
                         id="localisation"
+                        error={Boolean(fieldErrors.localisation)}
+                        helperText={fieldErrors.localisation}
                     />
 
 
@@ -88,8 +122,16 @@ export default function ModalAddNewItem(props) {
                         fullWidth
                         name="total"
                         label="Total (quantité)"
+                        error={Boolean(fieldErrors.totalItem)}
+                        helperText={fieldErrors.totalItem}
                         id="total"
                     />
+
+                    {
+                        requestStatus === 400 && (
+                            <Alert severity="error" margin="normal" required fullWidth>L'objet existe déjà</Alert>
+                        )
+                    }
                     <Button
                         type="submit"
                         fullWidth

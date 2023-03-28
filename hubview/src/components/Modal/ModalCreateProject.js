@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, TextField, Box, Typography, Button, RadioGroup, FormControlLabel, Radio, InputLabel, Select, Checkbox, ListItemText, MenuItem, OutlinedInput, FormControl } from '@mui/material';
+import { Modal, TextField, Box, Alert, Typography, Button, RadioGroup, FormControlLabel, Radio, InputLabel, Select, Checkbox, ListItemText, MenuItem, OutlinedInput, FormControl } from '@mui/material';
 import axios from 'axios';
 import { getCookie } from '../../utils/handlePage';
 
@@ -40,6 +40,13 @@ export default function ModalProject(props) {
 
     const [tagField, setTagField] = React.useState([]);
     const [projectType, setProjectType] = React.useState('Projet entreprise');
+    const [fieldErrors, setFieldErrors] = React.useState({});
+    const [requestStatus, setRequestStatus] = React.useState(null);
+
+    React.useEffect(() => {
+        setRequestStatus(null);
+        setFieldErrors({});
+    }, [open]);
 
     const handleChange = (event) => {
         const {
@@ -53,6 +60,20 @@ export default function ModalProject(props) {
     const createProject = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+
+
+        const fieldErrorss = {};
+        if (!data.get('name')) {
+            fieldErrorss.name = 'Veuillez renseigner le nom du projet';
+        }
+        if (!data.get('description')) {
+            fieldErrorss.description = 'Veuillez renseigner une description pour le projet';
+        }
+        if (Object.keys(fieldErrorss).length > 0) {
+            setFieldErrors(fieldErrorss);
+            return;
+        }
+
         const body = {
             name: data.get('name'),
             description: data.get('description'),
@@ -68,9 +89,13 @@ export default function ModalProject(props) {
                 setTagField([]);
                 handleClose();
                 getAllProjects();
+                setFieldErrors({});
+                setRequestStatus(res.status);
             })
             .catch((err) => {
                 console.log(err);
+                setRequestStatus(err.response?.status);
+                setFieldErrors({});
             });
     }
 
@@ -90,6 +115,8 @@ export default function ModalProject(props) {
                         id="name"
                         label="Nom du projet"
                         name="name"
+                        error={Boolean(fieldErrors.name)}
+                        helperText={fieldErrors.name}
                         autoFocus
                     />
 
@@ -101,6 +128,8 @@ export default function ModalProject(props) {
                         name="description"
                         label="Description"
                         id="description"
+                        error={Boolean(fieldErrors.description)}
+                        helperText={fieldErrors.description}
                         rows={4}
                     />
 
@@ -110,7 +139,7 @@ export default function ModalProject(props) {
                         defaultValue="Projet entreprise"
                     >
                         <FormControlLabel value="Projet entreprise" control={<Radio />} label="Projet entreprise" onChange={(e) => setProjectType("Projet entreprise")} />
-                        <FormControlLabel value="Projet personelle" control={<Radio />} label="Projet personelle" onChange={(e) => setProjectType("Projet personelle")}/>
+                        <FormControlLabel value="Projet personelle" control={<Radio />} label="Projet personelle" onChange={(e) => setProjectType("Projet personelle")} />
                     </RadioGroup>
 
                     <FormControl sx={{ m: 1, width: 300 }} >
@@ -131,6 +160,11 @@ export default function ModalProject(props) {
                                 </MenuItem>
                             ))}
                         </Select>
+                        {
+                            requestStatus === 400 && (
+                                <Alert severity="error" margin="normal" required fullWidth>Erreur dans la Matrix appelle Fab </Alert>
+                            )
+                        }
                     </FormControl>
 
                     <Button
