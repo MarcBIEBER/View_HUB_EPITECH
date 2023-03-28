@@ -44,7 +44,7 @@ export default function ModalAddNewItem(props) {
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
 
-                <Typography component="h4" variant="h4" align="center" color="text.primary" gutterBottom>
+                <Typography variant="h4" align="center" color="text.primary" gutterBottom>
                     Crée un item:
                 </Typography>
                 <Box component="form" noValidate onSubmit={createNewItem} sx={{ mt: 1 }}>

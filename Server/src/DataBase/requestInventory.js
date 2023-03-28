@@ -50,6 +50,25 @@ const updateItemInventory = async (value, tableName, updateExpression, expressio
     }
 };
 
+// get user from hubItemTable by email
+const getItem = async (itemName) => {
+    const params = {
+        TableName: process.env.INVENTORY_TABLE,
+        Key: {
+            name: itemName
+        },
+    };
+
+    try {
+        const data = await ddbDocClient.send(new GetCommand(params));
+        return data.Item;
+    } catch (err) {
+        console.log("Error: getItem:\n", err.stack);
+        return undefined;
+    }
+}
+
 module.exports = {
-    updateItemInventory
+    updateItemInventory,
+    getItem
 };

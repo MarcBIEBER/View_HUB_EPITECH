@@ -8,7 +8,7 @@ import { getCookie } from '../utils/handlePage';
 
 const theme = createTheme();
 
-const premadeTags = [
+const tags = [
 	'Front',
 	'Back',
 	'Fullstack',
@@ -22,9 +22,8 @@ const premadeTags = [
 export default function Project() {
 
 	const [projects, setProjects] = React.useState([]);
-	const [tags, setTags] = React.useState(premadeTags);
 	const [buttonDisabled, setButtonDisabled] = React.useState(true);
-    const [filterType, setFilterType] = React.useState("");
+	const [filterType, setFilterType] = React.useState("");
 
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => { setOpen(true) };
@@ -43,9 +42,9 @@ export default function Project() {
 			});
 	}
 
-    const handleFilterChange = (event) => {
-        setFilterType(event.target.value);
-    }
+	const handleFilterChange = (event) => {
+		setFilterType(event.target.value);
+	}
 
 	React.useEffect(() => {
 		getAllProjects();
@@ -59,35 +58,36 @@ export default function Project() {
 		setSelectedTag(event.target.value);
 	}
 	const filteredProjectsByType = selectedTag
-	? projects.filter((project) => project.tag.includes(selectedTag))
-	: projects;
-  
-  const filteredProjects = filterType
-	? filteredProjectsByType.filter((project) => project.type === filterType)
-	: filteredProjectsByType;
-  
+		? projects.filter((project) => project.tag.includes(selectedTag))
+		: projects;
+
+	const filteredProjects = filterType
+		? filteredProjectsByType.filter((project) => project.type === filterType)
+		: filteredProjectsByType;
+
 
 
 	return (
-		<div>
+		<>
 			<ThemeProvider theme={theme}>
 				<main>
 					<Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, }}>
 						<Container maxWidth="sm">
 							<Typography
-								component="h1"
 								variant="h2"
+								component={'h1'}
 								align="center"
 								color="text.primary"
 								gutterBottom
 							>
 								Vue des projets en cours
 							</Typography>
+							{buttonDisabled ? <Alert severity="error">Vous devez être connecté pour créer un projet</Alert> : <></>}
 							<Stack sx={{ pt: 4 }} spacing={2} justifyContent="center" >
 								<Button variant="contained" onClick={handleOpen} disabled={buttonDisabled}>
 									Crée un projet
 								</Button>
-								{ buttonDisabled ? <Alert severity="error">Vous devez être connecté pour créer un projet</Alert> : null }
+								
 								<Select
 									value={selectedTag}
 									onChange={handleTagChange}
@@ -101,15 +101,15 @@ export default function Project() {
 										</MenuItem>
 									))}
 								</Select>
-                                <Select
-                                    value={filterType}
-                                    onChange={handleFilterChange}
+								<Select
+									value={filterType}
+									onChange={handleFilterChange}
 									displayEmpty
-                                >
-                                    <MenuItem value="">Tous les types</MenuItem>
-                                    <MenuItem value="Projet entreprise">Entreprise</MenuItem>
-                                    <MenuItem value="Projet personelle">Perso</MenuItem>
-                                </Select>
+								>
+									<MenuItem value="">Tous les types</MenuItem>
+									<MenuItem value="Projet entreprise">Entreprise</MenuItem>
+									<MenuItem value="Projet personelle">Perso</MenuItem>
+								</Select>
 							</Stack>
 						</Container>
 					</Box>
@@ -130,9 +130,6 @@ export default function Project() {
 				setOpen={setOpen}
 				getAllProjects={getAllProjects}
 			/>
-		</div>
+		</>
 	);
 }
-
-
-// lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, quae quo quod, quidem, voluptas voluptate quibusdam voluptatum quos voluptates quia n esciun dunt ut la uda parum. Quam, quae quo quod, quidem, voluptas voluptate quibusdam voluptatum quos voluptates quia nesciunt ut laudantium pariatur. 

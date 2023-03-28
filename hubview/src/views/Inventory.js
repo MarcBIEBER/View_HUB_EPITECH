@@ -58,7 +58,7 @@ export default function EnhancedTable() {
 	};
 
 	return (
-		<div>
+		<>
 			<Box sx={{ width: '100%' }}>
 				<Paper sx={{ width: '100%', mb: 2 }}>
 					<EnhancedTableToolbar handleOpen={handleOpen} />
@@ -104,6 +104,6 @@ export default function EnhancedTable() {
 				open={openAsk}
 				setOpen={setOpenAsk}
 			/>
-		</div>
+		</>
 	);
 }

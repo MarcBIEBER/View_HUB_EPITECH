@@ -43,7 +43,7 @@ export default function ModalAskItem(props) {
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
 
-                <Typography component="h4" variant="h4" align="center" color="text.primary" gutterBottom>
+                <Typography variant="h4" align="center" color="text.primary" gutterBottom>
                     Demander un objet:
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleAskForItem} sx={{ mt: 1 }}>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Box, Typography, Button, Tooltip, IconButton, Stack, Chip } from '@mui/material';
+import { Modal, Box, Typography, Button, Tooltip, IconButton, Chip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import axios from 'axios';
@@ -102,7 +102,7 @@ export default function ModalViewProject(props) {
     return (
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h5" component="h2" sx={{ textAlign: 'center' }}>
+                <Typography id="modal-modal-title" variant="h5" sx={{ textAlign: 'center' }}>
                     {project.name}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>

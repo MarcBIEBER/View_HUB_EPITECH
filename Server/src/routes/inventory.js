@@ -7,7 +7,7 @@ const uuid = require('uuid');
 
 const { getAllTable, addItemAtTable, deleteItem } = require('../DataBase/request');
 
-const { updateItemInventory } = require('../DataBase/requestInventory');
+const { updateItemInventory, getItem } = require('../DataBase/requestInventory');
 const { verifyAdminToken, verifyAccessToken } = require('../auth');
 
 router.use(cors());
@@ -15,6 +15,10 @@ module.exports = router;
 
 router.post('/api/v1/addItem', verifyAdminToken, async (req, res) => {
     const { name, totalItem } = req.body;
+
+    if (!name || !totalItem) return res.status(400).json({ msg: 'Please include a name and total' });
+
+    if (await getItem(name)) return res.status(400).json({ msg: 'Item already exists' });
 
     const newItem = {
         name: name,
