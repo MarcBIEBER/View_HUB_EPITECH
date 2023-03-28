@@ -50,7 +50,16 @@ router.delete('/api/v1/deleteProject', async (req, res) => {
     
     const project = await getProject(name);
     if (!project) return res.status(400).json({ msg: 'Project not found' });
+    const usersSubscribed = project.currentSubscriber;
+    for (let i = 0; i < usersSubscribed.length; i++) {
+        const user = await getUser(usersSubscribed[i]);
+        const newValueUser = user.currentSubscibedProject.filter((project) => project !== name);
 
+        const updateExpression = "SET currentSubscibedProject = :currentSubscibedProject";
+        const expressionAttributeValues = { ":currentSubscibedProject": newValueUser };
+        const updatedUser = await updateItem(user.email, process.env.USER_TABLE, updateExpression, expressionAttributeValues);
+        if (!updatedUser) return res.status(500).json({ msg: 'Failed to delete project to all user' });
+    }
     const deletedProject = await deleteItem(process.env.PROJECT_TABLE, name);
     if (!deletedProject) return res.status(500).json({ msg: 'Failed to delete project' });
 
