@@ -117,11 +117,11 @@ export default function ModalViewProject(props) {
                     {isLogged ? (
                         subscribers.includes(getCookie("login")) ? (
                             <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
-                                Unsubscribe
+                                Se désinscrire du projet
                             </Button>
                         ) : (
                             <Button variant='contained' color='success' onClick={handleSubscribe} size='small' sx={{ margin: 1 }}>
-                                Subscribe
+                                S'inscrire au projet
                             </Button>
                         )
                     ) : (
