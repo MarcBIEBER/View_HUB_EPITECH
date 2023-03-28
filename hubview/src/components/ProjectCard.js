@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardContent, Avatar, Typography, Button, CardActions, Grid, Stack, Chip } from '@mui/material';
 import { red } from '@mui/material/colors';
 import ModalViewProject from './Modal/ModalViewProject';
+import { getCookie } from '../utils/handlePage';
 
 export default function ProjectCard(props) {
     const { project } = props;
@@ -10,12 +11,15 @@ export default function ProjectCard(props) {
 
     return (
         <Grid item key={project.name} xs={12} sm={6} md={4}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)' }}>
+            <Card sx={{ display: 'flex', flexDirection: 'column', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)' , minHeight: "45vh"}}>
                 <CardHeader
                     avatar={
+                        !getCookie("urlImage") ?
                         <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                             {project.owner[0].toUpperCase()}
                         </Avatar>
+                        :
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={getCookie("urlImage")} />
                     }
                     title={project.name}
                     subheader={project.date.split('T')[0]}

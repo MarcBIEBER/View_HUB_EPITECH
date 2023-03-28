@@ -122,5 +122,11 @@ router.get("/api/v1/getSubscribers", async (req, res) => {
     const project = await getProject(name);
     if (!project) return res.status(400).json({ msg: 'Project not found' });
 
-    res.status(200).json(project.currentSubscriber);
+    var users = [];
+    for (let i = 0; i < project.currentSubscriber.length; i++) {
+        const user = await getUser(project.currentSubscriber[i]);
+        users.push(user);
+    }
+
+    res.status(200).json(users);
 });

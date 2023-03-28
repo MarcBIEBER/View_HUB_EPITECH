@@ -113,7 +113,7 @@ export default function Project() {
 							</Stack>
 						</Container>
 					</Box>
-					<Container sx={{ py: 8 }} maxWidth="md">
+					<Container maxWidth="md">
 						<Grid container spacing={4}>
 							{filteredProjects.map((project) => (
 								<ProjectCard

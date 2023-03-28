@@ -37,20 +37,22 @@ router.post('/api/v1/login', async (req, res) => {
 });
 
 router.post('/api/v1/register', async (req, res) => {
-    if (!req.body.email || !req.body.password) {
+    const { email, password, urlToImg } = req.body;
+    if (!email || !password) {
         return res.status(400).json({ msg: 'Please include an email and a password' });
     }
-    if (await getUser(req.body.email)) {
+    if (await getUser(email)) {
         return res.status(400).json({ msg: 'Email is already taken' });
     }
     const user = {
-        email: req.body.email,
+        email: email,
         password: null,
         creationDate: new Date().toISOString(),
         accessToken: null,
+        urlImage: urlToImg ? urlToImg : null,
         currentSubscibedProject: [],
     }
-    user.password = await bcrypt.hash(req.body.password, 10);
+    user.password = await bcrypt.hash(password, 10);
     user.accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "24h" });
     addItemAtTable(user, process.env.USER_TABLE);
     res.status(200).send(user);

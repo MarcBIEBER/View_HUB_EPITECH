@@ -21,6 +21,7 @@ export default function Login(props) {
             .then((res) => {
                 document.cookie = "accessToken=" + res.data.accessToken
                 document.cookie = "login=" + res.data.email
+                document.cookie = "urlImage=" + res.data.urlImage
                 window.location.href = !previousView ? "/" : previousView;
             })
             .catch((err) => {

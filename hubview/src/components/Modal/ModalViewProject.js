@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Box, Typography, Button, Tooltip, IconButton, Chip } from '@mui/material';
+import { Modal, Box, Typography, Button, Tooltip, IconButton, Chip, Avatar } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import axios from 'axios';
@@ -115,7 +115,7 @@ export default function ModalViewProject(props) {
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, flexDirection: 'column' }}>
                     {isLogged ? (
-                        subscribers.includes(getCookie("login")) ? (
+                        subscribers.map((user) => user.email.includes(getCookie("login")) ? (
                             <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
                                 Se désinscrire du projet
                             </Button>
@@ -124,12 +124,12 @@ export default function ModalViewProject(props) {
                                 S'inscrire au projet
                             </Button>
                         )
-                    ) : (
+                    )) : (
                         <></>
                     )}
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
                         {subscribers.map((box) => (
-                            <Tooltip key={box} id={box.split()[0]} title={box}>
+                            <Tooltip key={box.email} title={box.email}>
                                 <Box
                                     sx={{
                                         width: '20px',
@@ -143,13 +143,18 @@ export default function ModalViewProject(props) {
                                         borderRadius: '50%'
                                     }}
                                 >
-                                    {box.split('')[0]}
+                                    {
+                                        box.urlImage === null ?
+                                            box.email.split('')[0].toUpperCase()
+                                            :
+                                            <Avatar alt={box.email.split('')[2]} src={box.urlImage} srcSet={box.urlImage} />
+                                    }
                                 </Box>
                             </Tooltip>
                         ))}
                     </Box>
                     {(isLogged && getCookie('login') === project.owner) || (isAdmin) ? (
-                        <IconButton size='small' aria-label="remove" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 1}} onClick={() => handleDeletProject()}>
+                        <IconButton size='small' aria-label="remove" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 1 }} onClick={() => handleDeletProject()}>
                             <DeleteIcon />
                         </IconButton>
                     ) : (
