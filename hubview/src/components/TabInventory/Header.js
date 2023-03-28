@@ -3,9 +3,19 @@ import PropTypes from 'prop-types';
 
 const headCells = [
 	{
+		id: "image",
+		numeric: false,
+		label: "Image",
+	},
+	{
 		id: 'name',
 		numeric: false,
 		label: 'Nom',
+	},
+	{
+		id: "localisation",
+		numeric: true,
+		label: "Localisation",
 	},
 	{
 		id: 'total',

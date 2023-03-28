@@ -4,15 +4,15 @@ import axios from 'axios';
 import { getCookie } from '../../utils/handlePage';
 
 const style = {
-	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: 'background.paper',
-	border: '2px solid #000',
-	boxShadow: 24,
-	p: 4,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
 };
 
 export default function ModalAddNewItem(props) {
@@ -20,24 +20,30 @@ export default function ModalAddNewItem(props) {
     const { open, setOpen, updateRows } = props;
 
 
-	const handleClose = () => setOpen(false);
+    const handleClose = () => setOpen(false);
 
-	const createNewItem = (event) => {
-        
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		const name = data.get('name');
-		const totalItem = data.get('total');
-		axios
-			.post("http://localhost:3000/inventory/api/v1/addItem", { name, totalItem, token: getCookie("accessToken") })
-			.then((res) => {
-				handleClose();
+    const createNewItem = (event) => {
+
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const body = {
+            name: data.get('name'),
+            totalItem: data.get('total'),
+            urlImage: data.get('urlImage'),
+            localisation: data.get('localisation'),
+            token: getCookie("accessToken")
+        }
+
+        axios
+            .post("http://localhost:3000/inventory/api/v1/addItem", body)
+            .then((res) => {
+                handleClose();
                 updateRows();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
     return (
 
@@ -48,6 +54,15 @@ export default function ModalAddNewItem(props) {
                     Ajouter un objet
                 </Typography>
                 <Box component="form" noValidate onSubmit={createNewItem} sx={{ mt: 1 }}>
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="urlImage"
+                        label="URL de l'image"
+                        id="urlImage"
+                    />
                     <TextField
                         margin="normal"
                         required
@@ -57,6 +72,16 @@ export default function ModalAddNewItem(props) {
                         name="name"
                         autoFocus
                     />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="localisation"
+                        label="Localisation"
+                        id="localisation"
+                    />
+
+
                     <TextField
                         margin="normal"
                         required

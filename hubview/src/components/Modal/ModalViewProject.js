@@ -114,19 +114,19 @@ export default function ModalViewProject(props) {
                     {project.description}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, flexDirection: 'column' }}>
-                    {isLogged ? (
-                        subscribers.map((user) => user.email.includes(getCookie("login")) ? (
-                            <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
-                                Se désinscrire du projet
-                            </Button>
-                        ) : (
-                            <Button variant='contained' color='success' onClick={handleSubscribe} size='small' sx={{ margin: 1 }}>
-                                S'inscrire au projet
-                            </Button>
-                        )
-                    )) : (
-                        <></>
-                    )}
+                    {isLogged ?
+                    subscribers.find(user => user.email == (getCookie("login"))) ? (
+                        <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
+                            Se désinscrire du projet
+                        </Button>
+                    ) : (
+                        <Button variant='contained' color='success' onClick={handleSubscribe} size='small' sx={{ margin: 1 }}>
+                            S'inscrire au projet
+                        </Button>
+                    )
+                    :
+                    <></>
+                }
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
                         {subscribers.map((box) => (
                             <Tooltip key={box.email} title={box.email}>

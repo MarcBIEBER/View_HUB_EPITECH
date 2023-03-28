@@ -58,6 +58,14 @@ router.post('/api/v1/register', async (req, res) => {
     res.status(200).send(user);
 });
 
+router.get('/api/v1/getUserImage', async (req, res) => {
+    const email = req.query.email;
+    if (!email) return res.status(400).json({ msg: 'Please include an email' });
+    const user = await getUser(email);
+    if (!user) return res.status(400).json({ msg: 'User not found' });
+    res.status(200).send(user.urlImage);
+});
+
 router.post('/api/v1/checkToken', verifyAccessToken, async (req, res) => {
     return res.status(200).send({ msg: 'Token is valid' });
 });

@@ -14,24 +14,22 @@ router.use(cors());
 module.exports = router;
 
 router.post('/api/v1/addItem', verifyAdminToken, async (req, res) => {
-    const { name, totalItem } = req.body;
+    const { name, totalItem, localisation, urlImage } = req.body;
 
-    if (!name || !totalItem) return res.status(400).json({ msg: 'Please include a name and total' });
+    if (!name || !totalItem || !localisation || !urlImage ) return res.status(400).json({ msg: 'Please include a name and total' });
 
     if (await getItem(name)) return res.status(400).json({ msg: 'Item already exists' });
 
     const newItem = {
+        urlImage: urlImage,
         name: name,
+        localisation: localisation,
         totalItem: totalItem,
         available: totalItem,
         used: 0,
         details: "Aucun détails",
         id: uuid.v4(),
     };
-    
-    if (!newItem.name || !newItem.totalItem) {
-        return res.status(400).json({ msg: 'Please include a name and total' });
-    }
 
     addItemAtTable(newItem, process.env.INVENTORY_TABLE);
     res.status(200).json(newItem);

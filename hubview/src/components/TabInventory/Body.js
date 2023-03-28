@@ -44,7 +44,7 @@ function stableSort(array, comparator) {
 
 export default function BodyTable(props) {
 
-    const { rows, setRows, order, orderBy, page, rowsPerPage, handleOpenModalAsk } = props;
+	const { rows, setRows, order, orderBy, page, rowsPerPage, handleOpenModalAsk } = props;
 
 	const [admin, setAdmin] = React.useState(false);
 
@@ -76,6 +76,20 @@ export default function BodyTable(props) {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
 				modifyItemInventory(row.name, "details", event.target.value);
+				return {
+					...row,
+					details: event.target.value
+				}
+			}
+			return row;
+		});
+		setRows(newRows);
+	};
+
+	const handleLocalisationChange = (event, id) => {
+		const newRows = rows.map(row => {
+			if (row.id === id) {
+				modifyItemInventory(row.name, "localisation", event.target.value);
 				return {
 					...row,
 					details: event.target.value
@@ -158,90 +172,110 @@ export default function BodyTable(props) {
 	// Avoid a layout jump when reaching the last page with empty rows.
 	const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    return (
-            <TableBody>
-            {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-                            <TableCell component="th" id={labelId} scope="row">
-                                {row.name}
-                            </TableCell>
-                            <TableCell align="right">
-                                {row.totalItem}
+	return (
+		<TableBody>
+			{stableSort(rows, getComparator(order, orderBy))
+				.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+				.map((row, index) => {
+					const labelId = `enhanced-table-checkbox-${index}`;
+					return (
+						<TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+							<TableCell align='left' style={{ width: "2vw" }}>
+								<img alt={row.name} src={row.urlImage} style={{ width: "2vw" }} />
+							</TableCell>
+							<TableCell component="th" id={labelId} scope="row">
+								{row.name}
+							</TableCell>
+
+
+							<TableCell align="right">
 								{
 									admin ?
-									<>
-                                <IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
-                                    <AddIcon />
-                                </IconButton>
-                                <IconButton size='small' aria-label="add" onClick={() => handleRemoveTotal(row.id)}>
-                                    <RemoveIcon />
-                                </IconButton>
-									</>
-									:
-									<></>
+										<TextField
+											id="standard-multiline-flexible"
+											label="Localisation"
+											multiline
+											maxRows={4}
+											variant="standard"
+											defaultValue={row.localisation}
+											onBlur={(e) => handleLocalisationChange(e, row.id)}
+										/>
+										:
+										<>{row.localisation}</>
 								}
-                            </TableCell>
+							</TableCell>
 
-                            <TableCell align="right">{row.available}</TableCell>
-                            <TableCell align="right">
-                                {row.used}
+							<TableCell align="right">
+								{row.totalItem}
 								{
 									admin ?
-									<>
-										<IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
-											<AddIcon />
-										</IconButton>
-										<IconButton size='small' aria-label="add" onClick={() => handleRemoveUsed(row.id)}>
-											<RemoveIcon />
-										</IconButton>
-									</>
-									:
-									<></>
+										<>
+											<IconButton size='small' aria-label="add" onClick={() => handleAddTotal(row.id)}>
+												<AddIcon />
+											</IconButton>
+											<IconButton size='small' aria-label="add" onClick={() => handleRemoveTotal(row.id)}>
+												<RemoveIcon />
+											</IconButton>
+										</>
+										:
+										<></>
 								}
-                            </TableCell>
+							</TableCell>
 
-                            <TableCell align="right">
-							{
-								admin ?
-                                <TextField
-                                    id="standard-multiline-flexible"
-                                    label="Commentaires"
-                                    multiline
-                                    maxRows={4}
-                                    variant="standard"
-                                    defaultValue={row.details}
-                                    onBlur={(e) => handleDetailsChange(e, row.id)}
-                                />
-								:
-								<>{row.details}</>
-							}
-                            </TableCell>
-							{
-								admin ?
-								<TableCell align="right" style={{ width: "2vw"}}>
-									<IconButton size='small' aria-label="remove" onClick={() => handleRemoveRow(row.name, row.id)}>
-										<DeleteIcon />
-									</IconButton>
-								</TableCell>
-								:
-								<TableCell align='right' style={{ width: "2vw"}}>
-									<IconButton size='small' aria-label="sendRequestItem" onClick={() => handleAskItem(row.name, row.id)}>
-										<SendIcon />
-									</IconButton>
-								</TableCell>
-							}
-                        </TableRow>
-                    );
-                })}
-            {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }} >
-                    <TableCell colSpan={6} />
-                </TableRow>
-            )}
-        </TableBody>
-    );
+							<TableCell align="right">{row.available}</TableCell>
+							<TableCell align="right">
+								{row.used}
+								{
+									admin ?
+										<>
+											<IconButton size='small' aria-label="add" onClick={() => handleAddUsed(row.id)}>
+												<AddIcon />
+											</IconButton>
+											<IconButton size='small' aria-label="add" onClick={() => handleRemoveUsed(row.id)}>
+												<RemoveIcon />
+											</IconButton>
+										</>
+										:
+										<></>
+								}
+							</TableCell>
+
+							<TableCell align="right">
+								{
+									admin ?
+										<TextField
+											id="standard-multiline-flexible"
+											label="Commentaires"
+											multiline
+											maxRows={4}
+											variant="standard"
+											defaultValue={row.details}
+											onBlur={(e) => handleDetailsChange(e, row.id)}
+										/>
+										:
+										<>{row.details}</>
+								}
+							</TableCell>
+							<TableCell align="right" style={{ width: "2vw" }}>
+								{
+									admin ?
+										<IconButton size='small' aria-label="remove" onClick={() => handleRemoveRow(row.name, row.id)}>
+											<DeleteIcon />
+										</IconButton>
+										:
+										<IconButton size='small' aria-label="sendRequestItem" onClick={() => handleAskItem(row.name, row.id)}>
+											<SendIcon />
+										</IconButton>
+								}
+							</TableCell>
+						</TableRow>
+					);
+				})}
+			{emptyRows > 0 && (
+				<TableRow style={{ height: 53 * emptyRows }} >
+					<TableCell colSpan={6} />
+				</TableRow>
+			)}
+		</TableBody>
+	);
 }
