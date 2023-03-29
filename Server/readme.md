@@ -19,8 +19,6 @@
     DB_ACCESS_KEY=dataBaseAccessKeyHere
     DB_SECRET_KEY=dataBaseSecretKeyHere
 
-    SECRET_KEY="secretKeyHere"
-
     ACCESS_TOKEN_SECRET=secretAceessTokenHere
 
     REFRESH_TOKEN_SECRET=secretTokenHere
