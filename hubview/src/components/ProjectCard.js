@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Card, CardHeader, CardContent, Avatar, Typography, Button, CardActions, Grid, Stack, Chip } from '@mui/material';
 import { red } from '@mui/material/colors';
 import ModalViewProject from './Modal/ModalViewProject';
-import { getCookie } from '../utils/handlePage';
 import axios from 'axios';
 
 export default function ProjectCard(props) {
@@ -24,7 +23,7 @@ export default function ProjectCard(props) {
 
     React.useEffect(() => {
         getProjectOwner(project.owner);
-    }, []);
+    }, [project.owner]);
 
     return (
         <Grid item key={project.name} xs={12} sm={6} md={4}>

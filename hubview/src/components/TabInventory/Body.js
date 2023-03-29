@@ -119,7 +119,7 @@ export default function BodyTable(props) {
 	const handleRemoveTotal = (id) => {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
-				if (row.totalItem == 0 || row.available == 0)
+				if (row.totalItem === 0 || row.available === 0)
 					return { ...row };
 				modifyItemInventory(row.name, "totalItem", parseInt(row.totalItem) - 1);
 				modifyItemInventory(row.name, "available", parseInt(row.available) - 1);
@@ -137,7 +137,7 @@ export default function BodyTable(props) {
 	const handleAddUsed = (id) => {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
-				if (row.available == 0)
+				if (row.available === 0)
 					return { ...row };
 				modifyItemInventory(row.name, "used", parseInt(row.used) + 1);
 				modifyItemInventory(row.name, "available", parseInt(row.available) - 1);
@@ -155,7 +155,7 @@ export default function BodyTable(props) {
 	const handleRemoveUsed = (id) => {
 		const newRows = rows.map(row => {
 			if (row.id === id) {
-				if (row.used == 0)
+				if (row.used === 0)
 					return row;
 				modifyItemInventory(row.name, "used", parseInt(row.used) - 1);
 				modifyItemInventory(row.name, "available", parseInt(row.available) + 1);

@@ -97,7 +97,7 @@ export default function ModalViewProject(props) {
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+    }, [project.name]);
 
     return (
         <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
@@ -115,7 +115,7 @@ export default function ModalViewProject(props) {
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, flexDirection: 'column' }}>
                     {isLogged ?
-                    subscribers.find(user => user.email == (getCookie("login"))) ? (
+                    subscribers.find(user => user.email === (getCookie("login"))) ? (
                         <Button variant='contained' color='error' onClick={handleUnSubscribe} size='small' sx={{ margin: 1 }}>
                             Se désinscrire du projet
                         </Button>
